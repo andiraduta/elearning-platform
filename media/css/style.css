@@ -1,0 +1,20 @@
+body {
+	text-align: center;
+}
+
+.container {
+	text-align: left;
+	width: 960px;
+}
+
+.login-box {
+	margin-top: 100px;
+}
+
+.navbar .brand {
+	padding: 5px 30px 8px 12px;
+}
+
+.clear {
+	clear: both;
+}
