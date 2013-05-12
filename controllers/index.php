@@ -10,7 +10,7 @@ class Index extends Controller {
 	
 	function index() {
         $data = array();
-		//$this->view->render('index', $data, false);
+		$this->view->render('index', $data);
 	}
 	
 }
