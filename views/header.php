@@ -20,7 +20,12 @@
 			<a class="brand" href="#">E-Learning</a>
 			<div class="nav-collapse collapse">
 				<p class="navbar-text pull-right">
-				Bine ai venit <a href="#" class="navbar-link">Vizitator</a>
+				Bine ai venit 
+				<?php if( isset($_SESSION['logat']) && $_SESSION['logat'] == true ) { ?>
+				<a href="#" class="navbar-link"><?php echo $_SESSION['utilizator']; ?></a>
+				<?php } else { ?>
+				<a href="#" class="navbar-link">Vizitator</a>
+				<?php } ?>
 				</p>
 				<ul class="nav">
 					<li class="active"><a href="#">Home</a></li>
@@ -36,6 +41,8 @@
 
 	<div class="row">
 		<div class="span3">
+		
+			<?php if( !isset($_SESSION['logat']) || $_SESSION['logat'] == false ) { ?>
 			<div class="well">
 				<form class="form-signin" method="post" action="<?php echo URL.'index.php?url=login/index' ?>">
 				<h4>Intră în cont</h4>
@@ -44,6 +51,7 @@
 				<button class="btn btn-primary" type="submit" name="login">Intră</button>
 				</form>
 			</div>
+			<?php } ?>
 		
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
