@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
 			<button type="button" class="btn btn-navbar">
@@ -20,16 +20,16 @@
 			<a class="brand" href="#">E-Learning</a>
 			<div class="nav-collapse collapse">
 				<p class="navbar-text pull-right">
-				Bine ai venit 
 				<?php if( isset($_SESSION['logat']) && $_SESSION['logat'] == true ) { ?>
-				<a href="#" class="navbar-link"><?php echo $_SESSION['utilizator']; ?></a>
+				<?php echo $_SESSION['utilizator'], ' (', $_SESSION['rol'], ')'; ?>
+				<a href="<?php echo URL . 'index.php?url=login/iesire'; ?>"><i class="icon-off icon-black"></i> Iesire</a>
 				<?php } else { ?>
 				<a href="#" class="navbar-link">Vizitator</a>
 				<?php } ?>
 				</p>
 				<ul class="nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#about">About</a></li>
+					<li class="active"><a href="#">Acasa</a></li>
+					<li><a href="#about">Cursuri</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
