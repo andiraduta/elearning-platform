@@ -22,7 +22,8 @@ class Login extends Controller {
 				$data['msg'] = '<div class="alert alert-error">Va rugam sa completati toate campurile text!</div>';
 			}
 		}
-		$this->view->render('login/index', $data);
+		//print_r($data);
+		$this->view->render('login', $data, false);
 	}
 	
 	public function iesire() {
