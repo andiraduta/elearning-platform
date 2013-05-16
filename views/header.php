@@ -30,7 +30,7 @@
 				<ul class="nav">
 					<li class="active"><a href="#">Acasa</a></li>
 					<li><a href="#about">Cursuri</a></li>
-					<li><a href="#contact">Contact</a></li>
+					<li><a href="#about">Noutati</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
@@ -55,16 +55,14 @@
 		
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
-					<li class="nav-header">Sidebar</li>
-					<li class="active"><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li class="nav-header">Sidebar</li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li class="nav-header">Sidebar</li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
+					<!--<li class="nav-header">Sidebar</li>-->
+					<li><a href="#"><i class="icon icon-user"></i> Profilul meu</a></li>
+					<li><a href="#"><i class="icon icon-folder-open"></i> Cursurile mele</a></li>
+					<li><a href="#"><i class="icon icon-calendar"></i> Calendar</a></li>
+					<li class="nav-header">Setari avansate</li>
+					<li><a href="#"><i class="icon icon-user"></i> Utilizatori</a></li>
+					<li><a href="#"><i class="icon icon-lock"></i> Permisiuni</a></li>
+					<li><a href="#"><i class="icon icon-wrench"></i> Setari generale</a></li>
 				</ul>
 			</div>
 			
@@ -77,7 +75,7 @@
 					<li><a href="#">Link</a></li>
 					<li><a href="#">Link</a></li>
 					<li class="divider"></li>
-					<li><a href="#"><i class="icon icon-list"></i>Toate cursurile</a></li>
+					<li><a href="#"><i class="icon icon-list"></i> Toate cursurile</a></li>
 				</ul>
 			</div>
 		</div><!--/span-->
