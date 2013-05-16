@@ -10,6 +10,8 @@ class Index extends Controller {
 	
 	function index() {
         $data = array();
+		$this->incarcaModel('cursuri');
+		$data['categorii_cursuri'] = $this->cursuri->categorii_cursuri();
 		$this->view->render('index', $data, false);
 	}
 	
