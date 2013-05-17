@@ -17,7 +17,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="brand" href="#">E-Learning</a>
+			<a class="brand" href="<?php echo URL.'index.php' ?>">E-Learning</a>
 			<div class="nav-collapse collapse">
 				<p class="navbar-text pull-right">
 				<?php if( isset($_SESSION['logat']) && $_SESSION['logat'] == true ) { ?>
@@ -28,7 +28,7 @@
 				<?php } ?>
 				</p>
 				<ul class="nav">
-					<li class="active"><a href="#">Acasa</a></li>
+					<li class="active"><a href="<?php echo URL.'index.php' ?>">Acasa</a></li>
 					<li><a href="#about">Cursuri</a></li>
 					<li><a href="#about">Noutati</a></li>
 				</ul>
@@ -56,13 +56,15 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<!--<li class="nav-header">Sidebar</li>-->
-					<li><a href="#"><i class="icon icon-user"></i> Profilul meu</a></li>
-					<li><a href="#"><i class="icon icon-folder-open"></i> Cursurile mele</a></li>
-					<li><a href="#"><i class="icon icon-calendar"></i> Calendar</a></li>
+					<li><a href="<?php echo URL.'index.php?url=utilizator/contul_meu' ?>"><i class="icon icon-user"></i> Profilul meu</a></li>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele' ?>"><i class="icon icon-folder-open"></i> Cursurile mele</a></li>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/calendar' ?>"><i class="icon icon-calendar"></i> Calendar</a></li>
+					<?php if( strtolower($_SESSION['rol']) == 'administrator' ) { ?>
 					<li class="nav-header">Setari avansate</li>
-					<li><a href="#"><i class="icon icon-user"></i> Utilizatori</a></li>
-					<li><a href="#"><i class="icon icon-lock"></i> Permisiuni</a></li>
-					<li><a href="#"><i class="icon icon-wrench"></i> Setari generale</a></li>
+					<li><a href="<?php echo URL.'index.php?url=utilizator/lista_utilizatori' ?>"><i class="icon icon-user"></i> Utilizatori</a></li>
+					<li><a href="<?php echo URL.'index.php?url=utilizator/permisiuni_utilizatori' ?>"><i class="icon icon-lock"></i> Permisiuni</a></li>
+					<li><a href="<?php echo URL.'index.php?url=setari' ?>"><i class="icon icon-wrench"></i> Setari generale</a></li>
+					<?php } ?>
 				</ul>
 			</div>
 			
