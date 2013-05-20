@@ -16,5 +16,10 @@ class Cursuri extends Controller {
 		$data = array();
 		$this->view->render('cursurile_mele', $data, false);
 	}
+	
+	public function calendar() {
+		$data = array();
+		$this->view->render('calendar', $data, false);
+	}
 
 } 
