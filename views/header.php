@@ -6,6 +6,11 @@
 
 <link href="<?php echo URL; ?>media/css/bootstrap.css" rel="stylesheet">
 <link href="<?php echo URL; ?>media/css/style.css" rel="stylesheet">
+<link href="<?php echo URL; ?>media/css/jquery-ui.css" rel="stylesheet">
+
+<script type="text/javascript" src="<?php echo URL; ?>media/js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo URL; ?>media/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="<?php echo URL; ?>media/js/jquery.ui.datepicker-ro.js"></script>
 </head>
 <body>
 
@@ -42,7 +47,7 @@
 	<div class="row">
 		<div class="span3">
 		
-			<?php if( !isset($_SESSION['logat']) || $_SESSION['logat'] == false ) { ?>
+			<?php if( !este_logat() ) { ?>
 			<div class="well">
 				<form class="form-signin" method="post" action="<?php echo URL.'index.php?url=login/index' ?>">
 				<h4>Intră în cont</h4>
@@ -53,13 +58,15 @@
 			</div>
 			<?php } ?>
 		
+			<?php if( este_logat() ) { ?>
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<!--<li class="nav-header">Sidebar</li>-->
 					<li><a href="<?php echo URL.'index.php?url=utilizator/contul_meu' ?>"><i class="icon icon-user"></i> Profilul meu</a></li>
 					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele' ?>"><i class="icon icon-folder-open"></i> Cursurile mele</a></li>
 					<li><a href="<?php echo URL.'index.php?url=cursuri/calendar' ?>"><i class="icon icon-calendar"></i> Calendar</a></li>
-					<?php if( strtolower($_SESSION['rol']) == 'administrator' ) { ?>
+					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <span class="badge badge-important">2</span></a></li>
+					<?php if( are_rol('administrator') ) { ?>
 					<li class="nav-header">Setari avansate</li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/lista_utilizatori' ?>"><i class="icon icon-user"></i> Utilizatori</a></li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/permisiuni_utilizatori' ?>"><i class="icon icon-lock"></i> Permisiuni</a></li>
@@ -67,6 +74,7 @@
 					<?php } ?>
 				</ul>
 			</div>
+			<?php } ?>
 			
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
