@@ -15,5 +15,10 @@ class Utilizator extends Controller {
 		$data = array();
 		$this->view->render('contul_meu', $data, false);
 	}
+	
+	public function lista_utilizatori() {
+		$data = array();
+		$this->view->render('lista_utilizatori', $data, false);
+	}
 
 } 
