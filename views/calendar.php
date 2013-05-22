@@ -2,8 +2,8 @@
 	$(function() {
 		$.datepicker.setDefaults($.datepicker.regional['ro']);
 		
-		var dates = ['2013/06/02', '2013/05/23'];
-		var tips  = ['Examen Arhitectura Calculatoarelor','Examen'];
+		var dates = ['2013/06/03', '2013/05/23', '2013/06/10'];
+		var tips  = ['Examen Arhitectura Calculatoarelor','Examen', 'Intalnire consiliere'];
 		
 		$( "#datepicker" ).datepicker({
 			dateFormat: 'dd-mm-yy',
@@ -31,7 +31,8 @@
 			
 			<ul>
 				<li>23-05-2013 - Examen Grafica pe calculator</li>
-				<li>02-06-2013 - Examen Arhitectura Calculatoarelor</li>
+				<li>03-06-2013 - Examen Arhitectura Calculatoarelor</li>
+				<li>10-06-2013 - Intalnire consiliere</li>
 			</ul>
 		
 			<div id="datepicker"></div>
