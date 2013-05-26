@@ -20,5 +20,15 @@ class Utilizator extends Controller {
 		$data = array();
 		$this->view->render('lista_utilizatori', $data, false);
 	}
+	
+	public function permisiuni_utilizatori() {
+		$data = array();
+		$this->view->render('roluri_permisiuni', $data, false);
+	}
+	
+	public function permisiuni() {
+		$data = array();
+		$this->view->render('permisiuni_utilizator', $data, false);
+	}
 
 } 
