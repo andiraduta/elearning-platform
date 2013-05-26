@@ -79,11 +79,11 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<li class="nav-header">Cursuri</li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
-					<li><a href="#">Link</a></li>
+					<li><a href="#">Engleza I</a></li>
+					<li><a href="#">Engleza II</a></li>
+					<li><a href="#">Pedagogie</a></li>
+					<li><a href="#">Algoritmi, Structuri de date</a></li>
+					<li><a href="#">Algebra</a></li>
 					<li class="divider"></li>
 					<li><a href="#"><i class="icon icon-list"></i> Toate cursurile</a></li>
 				</ul>

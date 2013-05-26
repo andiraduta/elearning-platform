@@ -18,6 +18,7 @@
 		
 			<h2>Ionut Popescu</h2>
 			
+			<p>Telefon: 0783673452</p>
 			<p>Adresa: Str. Polona, nr. 2</p>
 			<p>Localitate: Bucuresti</p>
 			<p>Ultima activitate: 22.05.2013</p>
