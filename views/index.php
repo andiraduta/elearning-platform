@@ -2,7 +2,13 @@
 			<div class="hero-unit">
 				<h1>Bine aţi venit!</h1>
 				<p>Portalul universitatii virtuale va permite sa accesati online cursurile, materialele, temele si sa comunicati mai usor cu profesorii.</p>
-				<p><a href="#" class="btn btn-primary btn-large">Vezi lista de cursuri &raquo;</a></p>
+				<p>
+					<?php if( !este_logat() ) { ?>
+					<a href="<?php echo URL.'index.php?url=login'; ?>" class="btn btn-primary btn-large">Vezi lista de cursuri &raquo;</a>
+					<?php } else { ?>
+					<a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele'; ?>" class="btn btn-primary btn-large">Vezi lista de cursuri &raquo;</a>
+					<?php } ?>
+				</p>
 			</div>
 
 			<div class="row">

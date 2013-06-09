@@ -34,8 +34,12 @@
 				</p>
 				<ul class="nav">
 					<li class="active"><a href="<?php echo URL.'index.php' ?>">Acasa</a></li>
-					<li><a href="#about">Cursuri</a></li>
-					<li><a href="#about">Noutati</a></li>
+					<?php if( !este_logat() ) { ?>
+					<li><a href="<?php echo URL.'index.php?url=login'; ?>">Cursuri</a></li>
+					<?php } else { ?>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele'; ?>">Cursuri</a></li>
+					<?php } ?>
+					<li><a href="<?php echo URL.'index.php?url=noutati'; ?>">Noutati</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
