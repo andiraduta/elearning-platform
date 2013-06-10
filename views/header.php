@@ -11,6 +11,14 @@
 <script type="text/javascript" src="<?php echo URL; ?>media/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo URL; ?>media/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<?php echo URL; ?>media/js/jquery.ui.datepicker-ro.js"></script>
+
+<?php if( are_rol('administrator') ) { ?>
+<link href="<?php echo URL; ?>media/css/bootstrap-wysihtml5.css" rel="stylesheet">
+<script type="text/javascript" src="<?php echo URL; ?>media/js/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="<?php echo URL; ?>media/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php echo URL; ?>media/js/bootstrap-wysihtml5.js"></script>
+<?php } ?>
+
 </head>
 <body>
 
@@ -71,6 +79,7 @@
 					<li><a href="<?php echo URL.'index.php?url=cursuri/calendar' ?>"><i class="icon icon-calendar"></i> Calendar</a></li>
 					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <span class="badge badge-important">2</span></a></li>
 					<?php if( are_rol('administrator') ) { ?>
+					<li><a href="<?php echo URL.'index.php?url=noutati/adauga' ?>"><i class="icon icon-star"></i> Adauga noutati</a></li>
 					<li class="nav-header">Setari avansate</li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/lista_utilizatori' ?>"><i class="icon icon-user"></i> Utilizatori</a></li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/permisiuni_utilizatori' ?>"><i class="icon icon-lock"></i> Permisiuni</a></li>

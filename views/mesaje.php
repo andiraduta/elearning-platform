@@ -6,7 +6,7 @@
 			<h2>Mesaje</h2>
 			
 			<p>
-				<a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Mesaj nou</a>
+				<a class="btn btn-success" href="<?php echo URL.'index.php?url=mesaje/trimite_mesaj' ?>"><i class="icon-plus icon-white"></i> Mesaj nou</a>
 			</p>
 		
 			<table class="table table-striped">

@@ -5,24 +5,32 @@
 		
 			<h3>Noutati</h3>
 			
-			<div>
-				<h4>Evaluare institutionala II</h4>
-				<p>Domeniile de studiu Matematica si Informatica din FMI au fost clasificate in categoria A, printre primele la nivel national (Matematica pe locul 3, Informatica pe locul 1), conform unui raport publicat de MECTS la inceputul noului an universitar 2011-2012.</p>
-			</div>
+			<?php if( are_rol('administrator') ) { ?>
+			<p><a href="<?php echo URL . 'index.php?url=noutati/adauga'; ?>" class="btn btn-primary">Adauga anunt</a></p>
+			<br />
+			<?php } ?>
 			
-			<hr />
+			<?php
+			if( !empty($noutati) ) {
 			
-			<div>
-				<h4>Evaluare institutionala I</h4>
-				<p>Potrivit unui studiu intern realizat in luna ianuarie 2011, absolventii Facultatii de Matematica si Informatica, specializarea Informatica, la 6-18 luni de la absolvire, lucreaza in domeniu, cu program complet si urmeaza in paralel un program de Master.</p>
-			</div>
+				foreach($noutati as $noutate) {
+				?>
+				<div>
+					<h4><?php echo $noutate['titlu']; ?></h4>
+					<p><small>postat de <strong><?php echo $noutate['nume']; ?></strong> - <?php echo date('d.m.Y', strtotime($noutate['data_creare'])); ?></small></p>
+					<p><?php echo $noutate['text']; ?></p>
+				</div>
+				
+				<hr />
+				<?php
+				}
 			
-			<hr />
-			
-			<div>
-				<h4>Conferinta "Romanian Cryptology Days"</h4>
-				<p>Serviciul de Informatii Externe, organizeaza in parteneriat cu Academia Romana cea de-a doua editie a conferintei internationale "Romanian Cryptology Days", RCD-2013, in perioada 16-17 septembrie 2013 la Bucuresti. Manifestarea este inscrisa in calendarul de evenimente criptologice de pe site-ul IACR. Lucrarile sustinute vor fi publicate intr-un volum cotat ISI.</p>
-			</div>
+			} else {
+			?>
+			<p>Nu exista anunturi.</p>
+			<?php
+			}
+			?>
 		
 		</div>
 	
