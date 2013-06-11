@@ -5,8 +5,10 @@
 		
 			<h2>Utilizatori</h2>
 			
+			<?php echo isset($mesaj) ? $mesaj : ''; ?>
+			
 			<p>
-				<a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Adauga utilizator</a>
+				<a class="btn btn-success" href="<?php echo URL.'index.php?url=utilizator/adauga'; ?>"><i class="icon-plus icon-white"></i> Adauga utilizator</a>
 			</p>
 						
 			<br>
@@ -17,39 +19,37 @@
 					<thead>
 						<tr>
 							<th>Id</th>
-							<th>Nume utilizator</th>
+							<th>Username</th>
+							<th>Rol</th>
 							<th>Activ</th>
 							<th width="250">Actiuni</th>
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+						if(!empty($utilizatori)) {
+							foreach($utilizatori as $utilizator) {
+							?>
+							<tr>
+								<td><?php echo $utilizator['id_utilizator']; ?></td>
+								<td><?php echo $utilizator['username']; ?></td>
+								<td><?php echo strtolower($utilizator['nume_rol']); ?></td>
+								<td><?php echo $utilizator['activ'] == 1 ? 'activ' : 'inactiv'; ?></td>
+								<td>
+									<a class="btn btn-info" href="<?php echo URL.'index.php?url=utilizator/modifica/'.$utilizator['id_utilizator']; ?>"><i class="icon-pencil icon-white"></i> Modifica</a> 
+									<a class="btn btn-danger" href="<?php echo URL.'index.php?url=utilizator/'.($utilizator['activ'] == 1 ? 'dezactiveaza' : 'activeaza').'/'.$utilizator['id_utilizator']; ?>"><i class="icon-trash icon-white"></i> <?php echo $utilizator['activ'] == 1 ? 'Dezactiveaza' : 'Activeaza'; ?></a>
+								</td>
+							</tr>
+							<?php
+							}
+						} else {
+						?>
 						<tr>
-							<td>1</td>
-							<td>admin</td>
-							<td>da</td>
-							<td>
-								<a class="btn btn-info" href="#"><i class="icon-pencil icon-white"></i> Modifica</a> 
-								<a class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i> Dezactiveaza</a>
-							</td>
+							<td>Nu exista utilizatori.</td>
 						</tr>
-						<tr>
-							<td>2</td>
-							<td>profesor</td>
-							<td>da</td>
-							<td>
-								<a class="btn btn-info" href="#"><i class="icon-pencil icon-white"></i> Modifica</a> 
-								<a class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i> Dezactiveaza</a>
-							</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>student</td>
-							<td>da</td>
-							<td>
-								<a class="btn btn-info" href="#"><i class="icon-pencil icon-white"></i> Modifica</a> 
-								<a class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i> Dezactiveaza</a>
-							</td>
-						</tr>
+						<?php
+						}
+						?>
 					</tbody>
 				</table>
 				

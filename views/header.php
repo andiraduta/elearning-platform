@@ -12,11 +12,12 @@
 <script type="text/javascript" src="<?php echo URL; ?>media/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<?php echo URL; ?>media/js/jquery.ui.datepicker-ro.js"></script>
 
-<?php if( are_rol('administrator') ) { ?>
 <link href="<?php echo URL; ?>media/css/bootstrap-wysihtml5.css" rel="stylesheet">
 <script type="text/javascript" src="<?php echo URL; ?>media/js/wysihtml5-0.3.0.js"></script>
 <script type="text/javascript" src="<?php echo URL; ?>media/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo URL; ?>media/js/bootstrap-wysihtml5.js"></script>
+
+<?php if( are_rol('administrator') ) { ?>
 <?php } ?>
 
 </head>
