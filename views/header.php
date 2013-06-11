@@ -70,14 +70,17 @@
 			</div>
 			<?php } ?>
 		
-			<?php if( este_logat() ) { ?>
+			<?php
+			if( este_logat() ) {
+			$nr_mesaje_necitite = nr_mesaje_necitite($_SESSION['id_utilizator']);
+			?>
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<!--<li class="nav-header">Sidebar</li>-->
 					<li><a href="<?php echo URL.'index.php?url=utilizator/contul_meu' ?>"><i class="icon icon-user"></i> Profilul meu</a></li>
 					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele' ?>"><i class="icon icon-folder-open"></i> Cursurile mele</a></li>
 					<li><a href="<?php echo URL.'index.php?url=cursuri/calendar' ?>"><i class="icon icon-calendar"></i> Calendar</a></li>
-					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <span class="badge badge-important">2</span></a></li>
+					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <?php echo $nr_mesaje_necitite > 0 ? '<span class="badge badge-important">'.$nr_mesaje_necitite.'</span>' : ''; ?></a></li>
 					<?php if( are_rol('administrator') ) { ?>
 					<li><a href="<?php echo URL.'index.php?url=noutati/adauga' ?>"><i class="icon icon-star"></i> Adauga noutati</a></li>
 					<li class="nav-header">Setari avansate</li>
