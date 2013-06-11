@@ -4,6 +4,7 @@ class Controller {
 
 	function __construct() {
 		$this->view = new View();
+		$this->incarcaModel('general');
 		
 		// verifica daca utilizatorul este logat
 		//$this->incarcaModel('user');
