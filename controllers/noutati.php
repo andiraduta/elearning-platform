@@ -4,7 +4,6 @@ class Noutati extends Controller {
     
     public function __construct() {
         parent::__construct();
-		$this->incarcaModel('general');
     }
     
     public function index() {

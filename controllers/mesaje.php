@@ -9,7 +9,31 @@ class Mesaje extends Controller {
 	
 	public function index() {
 		$data = array();
+		if( isset($_SESSION['mesaj']) ) {
+			$data['mesaj'] = $_SESSION['mesaj'];
+			unset($_SESSION['mesaj']);
+		}
+		$data['mesaje'] = $this->mesaj->lista_mesaje((int) $_SESSION['id_utilizator']);
+		$data['mesaje_trimise'] = $this->mesaj->lista_mesaje_trimise((int) $_SESSION['id_utilizator']);
 		$this->view->render('mesaje', $data, false);
+	}
+	
+	public function citeste($id_mesaj) {
+		$data = array();
+		$data['detalii_mesaj'] = $this->mesaj->detalii_mesaj($id_mesaj);
+		if( $data['detalii_mesaj']['status'] == 0 ) {
+			$this->mesaj->marcheaza_citit($id_mesaj);
+		}
+		$this->view->render('citeste_mesaj', $data, false);
+	}
+	
+	public function sterge($id_mesaj) {
+		if( $this->mesaj->sterge_mesaj($id_mesaj) ) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Mesajul a fost sters!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii mesajului!</div>';
+		}
+		redirect('index.php?url=mesaje');
 	}
 	
 	public function trimite_mesaj() {
