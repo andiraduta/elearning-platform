@@ -8,7 +8,7 @@ class Utilizator_Model extends Model {
     
     public function adauga_utilizator( $data ) {
         mysql_query("START TRANSACTION;");
-        $insert = "INSERT INTO utilizatori (id_utilizator, email, username, parola, data_creare, activ) VALUES (NULL, '".mysql_real_escape_string($data['email'])."', '".mysql_real_escape_string($data['username'])."', '".md5($data['parola'])."', '".date('Y-m-d H:i:s', time())."', ".$data['activ'].");";
+        $insert = "INSERT INTO utilizatori (id_utilizator, email, username, parola, nume, telefon, localitate, adresa, data_creare, activ) VALUES (NULL, '".mysql_real_escape_string($data['email'])."', '".mysql_real_escape_string($data['username'])."', '".md5($data['parola'])."', '".mysql_real_escape_string($data['nume'])."', '".mysql_real_escape_string($data['telefon'])."', '".mysql_real_escape_string($data['localitate'])."', '".mysql_real_escape_string($data['adresa'])."', '".date('Y-m-d H:i:s', time())."', 1);";
         if( mysql_query($insert) ) {
             $id_utilizator = mysql_insert_id();
             $insert = "INSERT INTO roluri_utilizatori (id_utilizator, id_rol) VALUES (".(int) $id_utilizator.", ".(int) $data['rol'].");";
@@ -25,7 +25,7 @@ class Utilizator_Model extends Model {
     }
     
     public function modifica_utilizator($data) {
-        $u = "UPDATE utilizatori SET email = '".$data['email']."', username = '".$data['username']."', activ = '".$data['activ']."' WHERE id_utilizator = ".$data['id_utilizator'].";";
+        $u = "UPDATE utilizatori SET email = '".$data['email']."', username = '".$data['username']."', nume = '".$data['nume']."', telefon = '".$data['telefon']."', localitate = '".$data['localitate']."', adresa = '".$data['adresa']."'  WHERE id_utilizator = ".$data['id_utilizator'].";";
         if( mysql_query($u) ) {
              $u = "UPDATE roluri_utilizatori SET id_rol = ".(int) $data['rol']." WHERE id_utilizator = ".(int) $data['id_utilizator'];
              mysql_query($u);
@@ -59,12 +59,18 @@ class Utilizator_Model extends Model {
     
     public function dezactiveaza_utilizator($id_utilizator) {
         $update = "UPDATE utilizatori SET activ = 0 WHERE id_utilizator = ".$id_utilizator;
-        mysql_query($update);
+        if( mysql_query($update) )
+			return true;
+		else
+			return false;
     }
     
     public function activeaza_utilizator($id_utilizator) {
         $update = "UPDATE utilizatori SET activ = 1 WHERE id_utilizator = ".$id_utilizator;
-        mysql_query($update);
+        if( mysql_query($update) )
+			return true;
+		else
+			return false;
     }
     
     public function toti_utilizatorii($inceput = 0, $limita = 10) {
@@ -82,6 +88,7 @@ class Utilizator_Model extends Model {
             FROM `utilizatori` u
             INNER JOIN `roluri_utilizatori` ru ON u.id_utilizator = ru.id_utilizator
             INNER JOIN `roluri` r ON ru.id_rol = r.id_rol 
+			ORDER BY nume_rol, username
             LIMIT $inceput, $limita;";
         $query = mysql_query($sql);
         $utilizatori = array();
