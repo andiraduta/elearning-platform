@@ -28,5 +28,11 @@ class Login_Model extends Model {
 			return false;
 		}
 	}
+	
+	
+	public function ultima_activitate($id_utilizator) {
+		$sql = "UPDATE utilizatori SET ultima_activitate = '".date('Y-m-d H:i:s', time())."' WHERE id_utilizator = ".(int) $id_utilizator;
+		mysql_query($sql);
+	}
 
 }

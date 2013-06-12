@@ -36,7 +36,7 @@ class Utilizator_Model extends Model {
     }
 	
 	public function detaliiUtilizator( $id_utilizator ) {
-		$sql   = "SELECT ru.id_rol, u.* FROM utilizatori u INNER JOIN roluri_utilizatori ru ON u.id_utilizator = ru.id_utilizator WHERE u.id_utilizator = " . (int) $id_utilizator . " LIMIT 1;";
+		$sql   = "SELECT ru.id_rol, r.nume_rol, u.* FROM utilizatori u INNER JOIN roluri_utilizatori ru ON u.id_utilizator = ru.id_utilizator INNER JOIN roluri r ON ru.id_rol = r.id_rol WHERE u.id_utilizator = " . (int) $id_utilizator . " LIMIT 1;";
 		$query = mysql_query($sql);
 		$detalii = mysql_fetch_assoc($query);
         return $detalii;
