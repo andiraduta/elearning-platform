@@ -106,6 +106,7 @@ class Utilizator extends Controller {
 	
 	public function contul_meu() {
 		$data = array();
+		$data['utilizator'] = $this->utilizator->detaliiUtilizator((int) $_SESSION['id_utilizator']);
 		$this->view->render('contul_meu', $data, false);
 	}
 	

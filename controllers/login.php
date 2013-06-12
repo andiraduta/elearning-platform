@@ -12,6 +12,7 @@ class Login extends Controller {
 			if( trim($_POST['utilizator']) != "" && trim($_POST['parola']) != "" ) {
 				$this->incarcaModel('login');
 				if( $this->login->validare_login($_POST['utilizator'], $_POST['parola']) ) {
+					$this->login->ultima_activitate($_SESSION['id_utilizator']);
 					// redirect in prima pagina a aplicatiei
 					header("Location: " . URL . "index.php?url=index");
 					exit();
