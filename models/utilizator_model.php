@@ -35,6 +35,15 @@ class Utilizator_Model extends Model {
         }
     }
 	
+	public function actualizare_utilizator($data) {
+        $u = "UPDATE utilizatori SET email = '".$data['email']."', nume = '".$data['nume']."', telefon = '".$data['telefon']."', localitate = '".$data['localitate']."', adresa = '".$data['adresa']."'  WHERE id_utilizator = ".$data['id_utilizator'].";";
+        if( mysql_query($u) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+	
 	public function detaliiUtilizator( $id_utilizator ) {
 		$sql   = "SELECT ru.id_rol, r.nume_rol, u.* FROM utilizatori u INNER JOIN roluri_utilizatori ru ON u.id_utilizator = ru.id_utilizator INNER JOIN roluri r ON ru.id_rol = r.id_rol WHERE u.id_utilizator = " . (int) $id_utilizator . " LIMIT 1;";
 		$query = mysql_query($sql);
