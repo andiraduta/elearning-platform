@@ -50,6 +50,7 @@
 					<tr>
 						<td><strong>Subiect</strong></td>
 						<td><strong>Status</strong></td>
+						<td><strong>Destinatar</strong></td>
 						<td><strong>Data</strong></td>
 					</tr>
 				</thead>
@@ -61,6 +62,7 @@
 						<tr>
 							<td><?php echo $mesaj['subiect']; ?></td>
 							<td><span class="label label-<?php echo $mesaj['status'] == 1 ? 'success' : 'important'; ?>"><?php echo $mesaj['status'] == 1 ? 'citit' : 'necitit'; ?></span></td>
+							<td><?php echo $mesaj['nume']; ?></td>
 							<td><?php echo date('d.m.Y', strtotime($mesaj['data_creare'])); ?></td>
 						</tr>
 						<?php
