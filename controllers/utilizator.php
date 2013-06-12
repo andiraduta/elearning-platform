@@ -86,6 +86,38 @@ class Utilizator extends Controller {
 		$this->view->render('modifica_utilizator', $data, false);
 	}
 	
+	public function actualizare_cont() {
+		$data = array();
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('email', 'EMAIL', 'trim|obligatoriu|email');
+            $validare_formular->set_rules('nume', 'PRENUME SI NUME', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $inserare = array(
+                    'id_utilizator' => (int) $_SESSION['id_utilizator'],
+                    'email' => $_POST['email'],
+                    'nume' => $_POST['nume'],
+                    'telefon' => $_POST['telefon'],
+                    'localitate' => $_POST['localitate'],
+                    'adresa' => $_POST['adresa'],
+                );
+                // datele au fost introduse
+                if( $this->utilizator->actualizare_utilizator($inserare) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Utilizatorul a fost modificat! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=utilizator">Vezi toti utilizatorii</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['utilizator'] = $this->utilizator->detaliiUtilizator((int) $_SESSION['id_utilizator']);
+		$this->view->render('modifica_informatii_cont', $data, false);
+	}
+	
 	public function activeaza($id_utilizator) {
 		if( $this->utilizator->activeaza_utilizator($id_utilizator) ) {
 			$_SESSION['mesaj'] = '<div class="alert alert-success">Utilizatorul a fost activat!</div>';
@@ -102,6 +134,34 @@ class Utilizator extends Controller {
 			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul efectuarii actiunii!</div>';
 		}
 		redirect('index.php?url=utilizator/lista_utilizatori');
+	}
+	
+	public function schimba_parola() {
+		$data = array();
+        if( isset($_POST['salveaza']) ) {
+            $validare_formular = new Validare_Formular;
+            $validare_formular->set_rules('parola', 'PAROLA', 'trim|obligatoriu'); 
+            $validare_formular->set_rules('confirma_parola', 'CONFIRMA PAROLA', 'trim|obligatoriu'); 
+            // validare
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            //salveaza
+            } else {
+                if( trim($_POST['parola']) == trim($_POST['confirma_parola']) ) {
+                    if( $this->utilizator->schimba_parola($_SESSION['id_utilizator'], $_POST['parola']) ) {
+                        unset($_POST);
+                        $data['mesaj'] = '<div class="alert alert-success">Datele au fost salvate!</div>';
+                    } else {
+                        $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! '.mysql_error().'</div>';
+                    }
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">Campurile "Parola" si "Confirma parola" nu coincid!</div>';    
+                }
+            }
+        }
+        $data['detalii_utilizator'] = $this->utilizator->detaliiUtilizator( $_SESSION['id_utilizator'] ); 
+        $this->view->render('modifica_parola', $data, false);
 	}
 	
 	public function contul_meu() {
