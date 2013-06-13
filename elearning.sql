@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS `cursuri` (
   `id_curs` int(15) NOT NULL AUTO_INCREMENT,
   `id_categorie` int(15) NOT NULL,
@@ -87,10 +88,11 @@ CREATE TABLE IF NOT EXISTS `mesaje` (
   PRIMARY KEY (`id_mesaj`),
   KEY `de_la_utilizator` (`de_la_utilizator`),
   KEY `catre_utilizator` (`catre_utilizator`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 INSERT INTO `mesaje` (`id_mesaj`, `de_la_utilizator`, `catre_utilizator`, `subiect`, `mesaj`, `status`, `data_creare`) VALUES
-(1, 1, 3, 'Raspuns privind data examen', 'Examenul va avea loc pe data de 12 iunie. Va rog sa-i anuntati si pe colegii din grupa dumneavoastra.<br><br>O zi buna,<br>Mihai Constantin<br>', 0, '2013-06-10 23:37:35');
+(1, 1, 3, 'Raspuns privind data examen', 'Examenul va avea loc pe data de 12 iunie. Va rog sa-i anuntati si pe colegii din grupa dumneavoastra.<br><br>O zi buna,<br>Mihai Constantin<br>', 0, '2013-06-10 23:37:35'),
+(2, 5, 1, 'Materiale curs', 'Buna ziua,<br><br>Am pregatit materialele pentru curs. Va rog sa ma anuntati cand este totul gata.<br><br>Cu stima,<br>Ciprian', 0, '2013-06-11 22:14:21');
 
 CREATE TABLE IF NOT EXISTS `noutati` (
   `id_noutate` int(15) NOT NULL AUTO_INCREMENT,
@@ -111,14 +113,23 @@ CREATE TABLE IF NOT EXISTS `permisiuni` (
   `id_permisiune` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `descriere_permisiune` varchar(50) NOT NULL,
   PRIMARY KEY (`id_permisiune`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
+INSERT INTO `permisiuni` (`id_permisiune`, `descriere_permisiune`) VALUES
+(1, 'adaugaUtilizator'),
+(2, 'stergeUtilizator'),
+(3, 'vedeListaUtilizatori'),
+(4, 'modificaRoluriPermisiuni'),
+(5, 'adaugaNoutati'),
+(6, 'adaugaEvenimente'),
+(7, 'adaugaCursuri'),
+(8, 'trimiteMesaje');
 
 CREATE TABLE IF NOT EXISTS `roluri` (
   `id_rol` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nume_rol` varchar(50) NOT NULL,
   PRIMARY KEY (`id_rol`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 INSERT INTO `roluri` (`id_rol`, `nume_rol`) VALUES
 (1, 'Administrator'),
@@ -132,6 +143,19 @@ CREATE TABLE IF NOT EXISTS `roluri_permisiuni` (
   KEY `id_permisiune` (`id_permisiune`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+INSERT INTO `roluri_permisiuni` (`id_rol`, `id_permisiune`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(3, 8),
+(2, 6),
+(2, 7),
+(2, 8);
 
 CREATE TABLE IF NOT EXISTS `roluri_utilizatori` (
   `id_utilizator` int(10) unsigned NOT NULL,
@@ -143,7 +167,13 @@ CREATE TABLE IF NOT EXISTS `roluri_utilizatori` (
 INSERT INTO `roluri_utilizatori` (`id_utilizator`, `id_rol`) VALUES
 (1, 1),
 (2, 2),
-(3, 3);
+(3, 3),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 2);
 
 CREATE TABLE IF NOT EXISTS `utilizatori` (
   `id_utilizator` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -155,11 +185,17 @@ CREATE TABLE IF NOT EXISTS `utilizatori` (
   `localitate` varchar(200) NOT NULL,
   `adresa` varchar(255) NOT NULL,
   `data_creare` datetime NOT NULL,
+  `ultima_activitate` datetime NOT NULL,
   `activ` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_utilizator`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
-INSERT INTO `utilizatori` (`id_utilizator`, `email`, `username`, `parola`, `nume`, `telefon`, `localitate`, `adresa`, `data_creare`, `activ`) VALUES
-(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', 1),
-(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', 1),
-(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', 1);
+INSERT INTO `utilizatori` (`id_utilizator`, `email`, `username`, `parola`, `nume`, `telefon`, `localitate`, `adresa`, `data_creare`, `ultima_activitate`, `activ`) VALUES
+(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', '2013-06-12 22:52:41', 1),
+(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', '0000-00-00 00:00:00', 1),
+(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', '0000-00-00 00:00:00', 1),
+(4, 'constantin@universitate.ro', 'constantin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Constantin Enache', '', 'Bucuresti', '', '2013-06-11 22:04:36', '0000-00-00 00:00:00', 1),
+(5, 'ciprian@universitate.ro', 'ciprian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Ciprian Enescu', '', 'Bucuresti', '', '2013-06-11 22:05:41', '0000-00-00 00:00:00', 1),
+(6, 'laurentiu@universitate.ro', 'laurentiu', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Laurentiu Constantin', '', '', '', '2013-06-11 22:06:39', '0000-00-00 00:00:00', 1),
+(7, 'maria@universitate.ro', 'maria', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Maria Georgescu', '', 'Bucuresti', '', '2013-06-11 22:07:06', '0000-00-00 00:00:00', 1),
+(8, 'emilian@universitate.ro', 'emilian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emilian Vaduva', '', '', '', '2013-06-11 22:07:33', '0000-00-00 00:00:00', 1);
