@@ -112,6 +112,14 @@ class Utilizator_Model extends Model {
         $query = mysql_query($sql);
         return mysql_fetch_assoc($query);
     }
+	
+	public function adauga_rol($data) {
+		$sql = "INSERT INTO roluri (id_rol, nume_rol) VALUES (NULL, '".$data['nume_rol']."');";
+		if( mysql_query($sql) )
+			return true;
+		else
+			return false;
+	}
     
     public function toate_rolurile($inceput = 0, $limita = 10) {
         $sql = "SELECT * FROM roluri LIMIT $inceput, $limita;";
