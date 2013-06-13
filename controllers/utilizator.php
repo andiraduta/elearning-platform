@@ -180,14 +180,59 @@ class Utilizator extends Controller {
 		$this->view->render('lista_utilizatori', $data, false);
 	}
 	
+	public function adauga_rol() {
+		$data = array();
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('nume_rol', 'NUME ROL', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $inserare = array(
+                    'nume_rol' => $_POST['nume_rol'],
+                );
+                // datele au fost introduse
+                if( $this->utilizator->adauga_rol($inserare) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Rolul a fost adaugat! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=utilizator/permisiuni_utilizatori">Vezi toate rolurile</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$this->view->render('adauga_rol', $data, false);
+	}
+	
+	public function modifica_permisiuni_rol($id_rol) {
+        $data = array();
+        $data['permisiuni_rol'] = $this->utilizator->permisiuni_rol($id_rol);
+        $data['permisiuni']     = $this->utilizator->toate_permisiunile(); 
+        $data['id_rol']         = $id_rol;
+        $data['detalii_rol']    = $this->utilizator->detalii_rol($id_rol); 
+        $this->view->render('modifica_permisiuni_rol', $data, false);
+    }
+	
 	public function permisiuni_utilizatori() {
 		$data = array();
+        $data['roluri']     = $this->utilizator->toate_rolurile();
 		$this->view->render('roluri_permisiuni', $data, false);
 	}
 	
-	public function permisiuni() {
-		$data = array();
-		$this->view->render('permisiuni_utilizator', $data, false);
-	}
+	public function ajax_editeaza_permisiune_rol() {
+        header('Content-Type: application/json');
+        if( isset($_POST['id_rol']) && isset($_POST['id_permisiune']) ) {
+            $id_rol = (int) $_POST['id_rol'];
+            $id_permisiune = (int) $_POST['id_permisiune'];
+            $activ = (int) $_POST['activat'];  
+            if( $this->utilizator->modifica_permisiune_rol( $id_rol, $id_permisiune, $activ ) ) {
+                echo json_encode(array('error' => 'false', 'mesaj' => 'ok')); 
+            } else {
+                echo json_encode(array('error' => 'true', 'mesaj' => 'A intervenit o eroare in momentul salvarii datelor!')); 
+            }
+        }
+        exit();
+    }
 
 } 
