@@ -84,10 +84,11 @@
 					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <?php echo $nr_mesaje_necitite > 0 ? '<span class="badge badge-important">'.$nr_mesaje_necitite.'</span>' : ''; ?></a></li>
 					<?php if( are_rol('administrator') ) { ?>
 					<li><a href="<?php echo URL.'index.php?url=noutati/adauga' ?>"><i class="icon icon-star"></i> Adauga noutati</a></li>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/categorii' ?>"><i class="icon icon-folder-open"></i> Adauga cursuri</a></li>
 					<li class="nav-header">Setari avansate</li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/lista_utilizatori' ?>"><i class="icon icon-user"></i> Utilizatori</a></li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/permisiuni_utilizatori' ?>"><i class="icon icon-lock"></i> Permisiuni</a></li>
-					<li><a href="<?php echo URL.'index.php?url=setari' ?>"><i class="icon icon-wrench"></i> Setari generale</a></li>
+					<!--<li><a href="<?php echo URL.'index.php?url=setari' ?>"><i class="icon icon-wrench"></i> Setari generale</a></li>-->
 					<?php } ?>
 				</ul>
 			</div>
@@ -96,13 +97,18 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<li class="nav-header">Cursuri</li>
-					<li><a href="#">Engleza I</a></li>
-					<li><a href="#">Engleza II</a></li>
-					<li><a href="#">Pedagogie</a></li>
-					<li><a href="#">Algoritmi, Structuri de date</a></li>
-					<li><a href="#">Algebra</a></li>
+					<?php
+					$cursuri_recente = cursuri_adaugate_recent();
+					foreach($cursuri_recente as $curs) {
+						echo '<li><a href="'.URL.'index.php?url=cursuri/curs/'.$curs['id_curs'].'">'.$curs['titlu'].'</a></li>';
+					}
+					?>
 					<li class="divider"></li>
-					<li><a href="#"><i class="icon icon-list"></i> Toate cursurile</a></li>
+					<?php if( este_logat() ) { ?>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele' ?>"><i class="icon icon-list"></i> Toate cursurile</a></li>
+					<?php } else { ?>
+					<li><a href="<?php echo URL.'index.php?url=login' ?>"><i class="icon icon-list"></i> Toate cursurile</a></li>
+					<?php } ?>
 				</ul>
 			</div>
 		</div><!--/span-->

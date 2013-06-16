@@ -14,7 +14,29 @@
 			<div class="row">
 				<div class="span8">
 					<h3>Categorii cursuri</h3>
+					<?php
+					function afiseaza_categorii($categorii_cursuri) {
+						$afiseaza = '';
+						foreach($categorii_cursuri as $categorie) {
+							$afiseaza .= '<li>';
+							$afiseaza .= '<a href="'.URL.'index.php?url=cursuri/categorie/'.$categorie['id_categorie'].'">'.$categorie['titlu'].'</a>';
+							if( !empty($categorie['subcategorii']) ) {
+								$afiseaza .= '<ul class="subcategorie">';
+								$afiseaza .= afiseaza_categorii($categorie['subcategorii']);
+								$afiseaza .= '</ul>';
+							}
+							$afiseaza .= '</li>';
+						}
+						return $afiseaza;
+					}
+					?>
 					<ul class="nav nav-pills nav-stacked">
+						<?php
+						if(!empty($categorii_cursuri)) {
+							echo afiseaza_categorii($categorii_cursuri);
+						}
+						?>
+						<!--
 						<li>
 							<a href="#">Facultatea de Matematica si Informatica</a>
 							<ul>
@@ -25,6 +47,7 @@
 						</li>
 						<li><a href="#">Facultatea de Geografie</a></li>
 						<li><a href="#">Facultatea de Litere</a></li>
+						-->
 					</ul>
 				</div>
 			</div>
