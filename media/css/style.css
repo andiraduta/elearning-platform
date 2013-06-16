@@ -16,6 +16,10 @@ body {
 	padding: 5px 30px 8px 12px;
 }
 
+.subcategorie {
+	margin-left: 35px; 
+}
+
 .clear {
 	clear: both;
 }
