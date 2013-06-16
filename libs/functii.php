@@ -19,3 +19,18 @@ function nr_mesaje_necitite( $id_utilizator ) {
 	$res = mysql_fetch_assoc($query);
 	return $res['nr'];
 }
+
+function cursuri_adaugate_recent() {
+	$sql = "SELECT c.*, u.id_utilizator, u.username, u.nume, cc.titlu as 'categorie'  
+		FROM cursuri c
+		INNER JOIN cursuri_categorii cc ON c.id_categorie = cc.id_categorie
+		INNER JOIN utilizatori u ON c.id_responsabil = u.id_utilizator 
+		ORDER BY c.id_curs DESC
+		LIMIT 4";
+	$query = mysql_query($sql);
+	$cursuri = array();
+	while($row = mysql_fetch_assoc($query)) {
+		$cursuri[] = $row;
+	}
+	return $cursuri;
+}
