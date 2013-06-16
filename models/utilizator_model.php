@@ -91,6 +91,20 @@ class Utilizator_Model extends Model {
         }
         return $utilizatori;
     } 
+	
+	public function lista_profesori() {
+		$sql = "SELECT u.* 
+			FROM utilizatori u 
+			INNER JOIN roluri_utilizatori ru ON u.id_utilizator = ru.id_utilizator
+			INNER JOIN roluri r ON ru.id_rol = r.id_rol 
+			WHERE nume_rol = 'Profesor';";
+        $query = mysql_query($sql);
+        $utilizatori = array();
+        while($row = mysql_fetch_assoc($query)) {
+            $utilizatori[] = $row;
+        }
+        return $utilizatori;
+	}
     
     public function utilizatori_roluri($inceput = 0, $limita = 10) {
         $sql = "SELECT *
