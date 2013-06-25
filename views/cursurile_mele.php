@@ -12,6 +12,9 @@
 				<div>
 					<h3><a href="<?php echo URL; ?>index.php?url=cursuri/curs/<?php echo $curs['id_curs']; ?>"><?php echo $curs['titlu']; ?></a></h3>
 					<p><strong>Profesor:</strong> <?php echo $curs['nume']; ?></p>
+					<p>
+						<a href="#" class="btn">Adauga cursanti</a>
+					</p>
 				</div>
 				
 				<hr />
