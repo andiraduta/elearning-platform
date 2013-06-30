@@ -25,7 +25,13 @@ class Cursuri extends Controller {
 	
 	public function curs($id_curs) {
 		$data = array();
+		if(isset($_SESSION['mesaj'])) {
+			$data['mesaj'] = $_SESSION['mesaj'];
+			unset($_SESSION['mesaj']);
+		}
+		$data['id_curs'] = $id_curs;
 		$data['detalii_curs'] = $this->cursuri->detalii_curs($id_curs);
+		$data['discutii'] = $this->cursuri->discutii_forum($data['detalii_curs']['id_forum']);
 		$this->view->render('curs', $data, false);
 	}
 	
@@ -129,8 +135,167 @@ class Cursuri extends Controller {
 		$this->view->render('adauga_curs', $data, false);
 	}
 	
+	public function adauga_subiect_discutie($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_forum = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('subiect', 'SUBIECT', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+                    'id_forum' => $id_forum,
+                    'titlu' => $_POST['subiect'],
+					'id_utilizator' => $_SESSION['id_utilizator']
+                );
+                // datele au fost introduse
+                if( $this->cursuri->adauga_subiect_discutie($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Subiectul a fost adaugat! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_forum'] = $id_forum;
+		$data['id_curs'] = $id_curs;
+		$this->view->render('adauga_subiect_discutie', $data, false);
+	}
+	
+	public function modifica_subiect_discutie($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_subiect = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('subiect', 'SUBIECT', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $update = array(
+                    'id_subiect' => $id_subiect,
+                    'titlu' => $_POST['subiect']
+                );
+                // datele au fost introduse
+                if( $this->cursuri->modifica_subiect_discutie($update) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Subiectul a fost modificat! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_subiect'] = $id_subiect;
+		$data['id_curs'] = $id_curs;
+		$data['detalii_subiect'] = $this->cursuri->subiect_discutie($id_subiect);
+		$this->view->render('modifica_subiect_discutie', $data, false);
+	}
+	
+	public function postari($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_subiect = $id_exp[1];
+		$data['detalii_curs'] = $this->cursuri->detalii_curs($id_curs);
+		$data['subiect'] = $this->cursuri->subiect_discutie($id_subiect);
+		$data['postari'] = $this->cursuri->postari_subiect($id_subiect);
+		$data['id_curs'] = $id_curs;
+		$data['id_subiect'] = $id_subiect;
+		if(isset($_SESSION['mesaj'])) {
+			$data['mesaj'] = $_SESSION['mesaj'];
+			unset($_SESSION['mesaj']);
+		}
+		$this->view->render('discutii', $data, false);
+	}
+	
+	public function adauga_postare($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_subiect = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('raspuns', 'RASPUNS', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+                    'id_discutie' => $id_subiect,
+					'id_utilizator' => $_SESSION['id_utilizator'],
+                    'raspuns' => $_POST['raspuns'],
+                );
+                // datele au fost introduse
+                if( $this->cursuri->adauga_postare($insert) ) {
+                    unset($_POST);
+                    $_SESSION['mesaj'] = '<div class="alert alert-success">Postarea a fost adaugata!</div>';
+					header("Location: index.php?url=cursuri/postari/{$id_curs}_{$id_subiect}");
+					exit();
+				} else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_curs'] = $id_curs;
+		$data['id_subiect'] = $id_subiect;
+		$this->view->render('adauga_postare', $data, false);
+	}
+	
+	public function sterge_subiect_discutie($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_subiect = $id_exp[1];
+		if($this->cursuri->sterge_subiect_discutie($id_subiect)) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Subiectul a fost sters!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/curs/{$id_curs}");
+	}
+	
+	public function adauga_eveniment($id_curs) {
+		$data = array();
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('data', 'DATA EVENIMENT', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+                    'id_curs' => $id_curs,
+                    'titlu' => $_POST['titlu'],
+                    'data_eveniment' => $_POST['data'],
+					'id_utilizator' => $_SESSION['id_utilizator']
+                );
+                // datele au fost introduse
+                if( $this->cursuri->adauga_eveniment($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Evenimentul a fost adaugat! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/cursurile_mele">Vezi lista cursuri</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_curs'] = $id_curs;
+		$this->view->render('adauga_eveniment', $data, false);
+	}
+	
 	public function calendar() {
 		$data = array();
+		$data['evenimente'] = $this->cursuri->evenimente_student($_SESSION['id_utilizator']);
 		$this->view->render('calendar', $data, false);
 	}
 
