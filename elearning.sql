@@ -1,3 +1,6 @@
+--
+-- Database: `elearning`
+--
 
 -- --------------------------------------------------------
 
@@ -94,6 +97,53 @@ CREATE TABLE IF NOT EXISTS `cursuri_tipuri_activitati` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cursuri_utilizatori`
+--
+
+CREATE TABLE IF NOT EXISTS `cursuri_utilizatori` (
+  `id_curs_utilizator` int(15) NOT NULL AUTO_INCREMENT,
+  `id_curs` int(15) NOT NULL,
+  `id_utilizator` int(15) NOT NULL,
+  PRIMARY KEY (`id_curs_utilizator`),
+  KEY `id_curs` (`id_curs`),
+  KEY `id_utilizator` (`id_utilizator`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `cursuri_utilizatori`
+--
+
+INSERT INTO `cursuri_utilizatori` (`id_curs_utilizator`, `id_curs`, `id_utilizator`) VALUES
+(1, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `evenimente`
+--
+
+CREATE TABLE IF NOT EXISTS `evenimente` (
+  `id_eveniment` int(15) NOT NULL AUTO_INCREMENT,
+  `id_curs` int(15) NOT NULL,
+  `id_utilizator` int(15) NOT NULL,
+  `titlu` varchar(255) NOT NULL,
+  `data_eveniment` datetime NOT NULL,
+  `data_creare` datetime NOT NULL,
+  PRIMARY KEY (`id_eveniment`),
+  KEY `id_curs` (`id_curs`),
+  KEY `id_utilizator` (`id_utilizator`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `evenimente`
+--
+
+INSERT INTO `evenimente` (`id_eveniment`, `id_curs`, `id_utilizator`, `titlu`, `data_eveniment`, `data_creare`) VALUES
+(1, 3, 1, 'Test de verificare', '2013-06-12 00:00:00', '2013-07-01 00:24:08');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `forum`
 --
 
@@ -128,17 +178,20 @@ CREATE TABLE IF NOT EXISTS `forum_discutii` (
   `id_discutie` int(15) NOT NULL AUTO_INCREMENT,
   `id_forum` int(15) NOT NULL,
   `id_utilizator` int(15) NOT NULL,
-  `titlu` int(11) NOT NULL,
-  `data_creare` int(11) NOT NULL,
+  `titlu` varchar(255) NOT NULL,
+  `data_creare` datetime NOT NULL,
   PRIMARY KEY (`id_discutie`),
   KEY `id_forum` (`id_forum`),
   KEY `id_utilizator` (`id_utilizator`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `forum_discutii`
 --
 
+INSERT INTO `forum_discutii` (`id_discutie`, `id_forum`, `id_utilizator`, `titlu`, `data_creare`) VALUES
+(2, 5, 1, 'Rezolvarea temelor', '0000-00-00 00:00:00'),
+(3, 5, 1, 'Materiale de lucru', '2013-06-29 18:20:43');
 
 -- --------------------------------------------------------
 
@@ -155,12 +208,19 @@ CREATE TABLE IF NOT EXISTS `forum_postari` (
   PRIMARY KEY (`id_postare`),
   KEY `id_discutie` (`id_discutie`),
   KEY `id_utilizator` (`id_utilizator`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `forum_postari`
 --
 
+INSERT INTO `forum_postari` (`id_postare`, `id_discutie`, `id_utilizator`, `mesaj`, `data_creare`) VALUES
+(1, 2, 1, 'Doar testez, nimic important.', '2013-06-30 04:20:28'),
+(2, 2, 1, 'Am inteles, rezolvam.', '2013-06-30 16:05:20'),
+(3, 2, 1, 'Sa vedem cum functioneaza si mai <u>vorbim</u>.<br>', '2013-06-30 16:15:44'),
+(4, 2, 2, 'Sunt de acord.<br>', '2013-06-30 16:16:52'),
+(5, 3, 2, 'Pentru intrebari postati aici.<br><ul><li>prima</li><li>a doua</li><li>a treia<br></li></ul>', '2013-06-30 18:10:30'),
+(6, 2, 3, 'V-am trimis un mesaj in legatura cu tema de saptamana aceasta.<br>', '2013-07-01 00:52:01');
 
 -- --------------------------------------------------------
 
@@ -346,9 +406,9 @@ CREATE TABLE IF NOT EXISTS `utilizatori` (
 --
 
 INSERT INTO `utilizatori` (`id_utilizator`, `email`, `username`, `parola`, `nume`, `telefon`, `localitate`, `adresa`, `data_creare`, `ultima_activitate`, `activ`) VALUES
-(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', '2013-06-15 17:04:23', 1),
-(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', '0000-00-00 00:00:00', 1),
-(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', '2013-06-17 01:25:42', 1),
+(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', '2013-07-01 00:52:27', 1),
+(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', '2013-06-30 16:16:31', 1),
+(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', '2013-07-01 00:46:55', 1),
 (4, 'constantin@universitate.ro', 'constantin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Constantin Enache', '', 'Bucuresti', '', '2013-06-11 22:04:36', '0000-00-00 00:00:00', 1),
 (5, 'ciprian@universitate.ro', 'ciprian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Ciprian Enescu', '', 'Bucuresti', '', '2013-06-11 22:05:41', '0000-00-00 00:00:00', 1),
 (6, 'laurentiu@universitate.ro', 'laurentiu', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Laurentiu Constantin', '', '', '', '2013-06-11 22:06:39', '0000-00-00 00:00:00', 1),
