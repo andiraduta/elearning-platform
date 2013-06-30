@@ -2,8 +2,18 @@
 	$(function() {
 		$.datepicker.setDefaults($.datepicker.regional['ro']);
 		
-		var dates = ['2013/06/03', '2013/05/23', '2013/06/10'];
-		var tips  = ['Examen Arhitectura Calculatoarelor','Examen', 'Intalnire consiliere'];
+		<?php
+		$date = array();
+		$descrieri = array();
+		if(!empty($evenimente)) {
+			foreach($evenimente as $eveniment) {
+				$date[] = "'".date('Y/m/d', strtotime($eveniment['data_eveniment']))."'";
+				$descrieri[] = "'".$eveniment['titlu']."'";
+			}
+		}
+		?>
+		var dates = [<?php echo implode(',', $date); ?>];
+		var tips  = [<?php echo implode(',', $descrieri); ?>];
 		
 		$( "#datepicker" ).datepicker({
 			dateFormat: 'dd-mm-yy',
@@ -30,9 +40,17 @@
 			<h2>Calendar evenimente</h2>
 			
 			<ul>
-				<li>23-05-2013 - Examen Grafica pe calculator</li>
-				<li>03-06-2013 - Examen Arhitectura Calculatoarelor</li>
-				<li>10-06-2013 - Intalnire consiliere</li>
+				<?php
+				if(!empty($evenimente)) {
+					foreach($evenimente as $eveniment) {
+					?>
+					<li><?php echo date('d-m-Y', strtotime($eveniment['data_eveniment'])),' - ', $eveniment['titlu'], ' (Curs: ', $eveniment['curs'], ')'; ?></li>
+					<?php
+					}
+				} else {
+					echo '<li>Nu exista evenimente, inca.</li>';
+				}
+				?>
 			</ul>
 		
 			<div id="datepicker"></div>
