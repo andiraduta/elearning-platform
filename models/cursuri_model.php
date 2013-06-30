@@ -19,7 +19,7 @@ class Cursuri_Model extends Model {
 	}
 	
 	public function detalii_curs($id_curs) {
-		$sql = "SELECT c . * , u.id_utilizator, u.username, u.nume, cc.titlu AS 'categorie', f.nume AS 'nume_forum'
+		$sql = "SELECT c . * , u.id_utilizator, u.username, u.nume, cc.titlu AS 'categorie', f.id_forum, f.nume AS 'nume_forum'
 			FROM cursuri c
 			INNER JOIN cursuri_categorii cc ON c.id_categorie = cc.id_categorie
 			INNER JOIN utilizatori u ON c.id_responsabil = u.id_utilizator
@@ -128,6 +128,101 @@ class Cursuri_Model extends Model {
 		$sql = "SELECT * FROM cursuri_categorii WHERE id_categorie = ". (int) $id_categorie . " LIMIT 1;";
 		$query = mysql_query($sql);
 		return mysql_fetch_assoc($query);
+	}
+	
+	public function discutii_forum($id_forum) {
+		$sql = "SELECT fd.*, count(id_postare) as 'nr_postari' FROM forum_discutii fd LEFT JOIN forum_postari p ON fd.id_discutie = p.id_discutie  WHERE fd.id_forum = ".(int) $id_forum.' GROUP BY fd.id_discutie';
+		$query = mysql_query($sql);
+		$discutii = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$discutii[] = $row;
+		}
+		
+		return $discutii;
+	}
+	
+	public function subiect_discutie($id_subiect) {
+		$sql = "SELECT * FROM forum_discutii WHERE id_discutie = ".(int) $id_subiect;
+		$query = mysql_query($sql);
+		return mysql_fetch_assoc($query);
+	}
+	
+	public function postari_subiect($id_subiect) {
+		$sql = "SELECT fp.*, u.id_utilizator, u.nume, u.username
+			FROM forum_postari fp 
+			INNER JOIN utilizatori u ON fp.id_utilizator = u.id_utilizator 
+			WHERE id_discutie = ".(int) $id_subiect;
+		$query = mysql_query($sql);
+		
+		$postari = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$postari[] = $row;
+		}
+		
+		return $postari;
+	}
+	
+	public function adauga_subiect_discutie($data) {
+		$sql = "INSERT INTO forum_discutii (id_discutie, id_forum, id_utilizator, titlu, data_creare) VALUES (NULL, ".(int) $data['id_forum'].", ".(int) $data['id_utilizator'].", '".mysql_real_escape_string($data['titlu'])."', '".date('Y-m-d H:i:s', time())."');";
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function modifica_subiect_discutie($data) {
+		$sql = "UPDATE forum_discutii SET titlu = '".mysql_real_escape_string($data['titlu'])."' WHERE id_discutie = ".(int) $data['id_subiect'];
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function sterge_subiect_discutie($id_subiect) {
+		$sql = "DELETE FROM forum_discutii WHERE id_discutie = ".(int) $id_subiect;
+		if( mysql_query($sql) ) {
+			$sql = "DELETE FROM forum_postari WHERE id_discutie = ".(int) $id_subiect;
+			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function adauga_postare($data) {
+		$sql = "INSERT INTO forum_postari (id_postare, id_discutie, id_utilizator, mesaj, data_creare) VALUES (NULL, ".(int) $data['id_discutie'].", ".(int) $data['id_utilizator'].", '".mysql_real_escape_string($data['raspuns'])."', '".date('Y-m-d H:i:s', time())."');";
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function adauga_eveniment($data) {
+		$sql = "INSERT INTO evenimente (id_eveniment, id_curs, id_utilizator, titlu, data_eveniment, data_creare) VALUES (NULL, ".(int) $data['id_curs'].", ".(int) $data['id_utilizator'].", '".mysql_real_escape_string($data['titlu'])."', '".date('Y-m-d H:i:s', strtotime($data['data_eveniment']))."', '".date('Y-m-d H:i:s', time())."');";
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function evenimente_student($id_utilizator) {
+		$sql = "SELECT e.titlu, e.data_eveniment, c.titlu as 'curs' 
+			FROM `evenimente` e 
+			INNER JOIN cursuri c ON e.id_curs = c.id_curs 
+			INNER JOIN cursuri_utilizatori cu ON c.id_curs = cu.id_curs 
+			INNER JOIN utilizatori u ON cu.id_utilizator = u.id_utilizator
+			WHERE cu.id_utilizator = ".(int) $id_utilizator.";";
+		$query = mysql_query($sql);
+		$evenimente = array();
+		while($row = mysql_fetch_assoc($query)) {
+			$evenimente[] = $row;
+		}
+		
+		return $evenimente;
 	}
 	
 }
