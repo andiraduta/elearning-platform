@@ -72,6 +72,20 @@ class Cursuri_Model extends Model {
 		return $cursuri;
 	}
 	
+	public function lista_utilizatori_curs($id_curs) {
+		$sql = "SELECT u.*
+			FROM cursuri_utilizatori cu 
+			INNER JOIN cursuri c ON cu.id_curs = c.id_curs
+			INNER JOIN utilizatori u ON cu.id_utilizator = u.id_utilizator
+			WHERE c.id_curs = ".(int) $id_curs;
+		$query = mysql_query($sql);
+		$utilizatori = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$utilizatori[] = $row;
+		}
+		return $utilizatori;
+	}
+	
 	public function categorii_cursuri() {
 		$sql = "SELECT * FROM cursuri_categorii ORDER BY id_categorie;";
 		$query = mysql_query($sql);
@@ -224,5 +238,21 @@ class Cursuri_Model extends Model {
 		
 		return $evenimente;
 	}
+	
+	public function adauga_utilizator_curs( $id_curs, $id_utilizator, $activ ) {
+        if( $activ == 0 ) {
+            $d = "DELETE FROM cursuri_utilizatori WHERE id_curs = ".(int) $id_curs." AND id_utilizator = ".(int) $id_utilizator.";";
+            if( mysql_query($d) )
+                return true;
+            else
+                return false;
+        } else {
+            $i = "INSERT INTO cursuri_utilizatori (id_curs_utilizator, id_curs, id_utilizator) VALUES (NULL, ".(int) $id_curs.", ".(int) $id_utilizator.");";
+            if( mysql_query($i) )
+                return true;
+            else
+                return false;
+        }
+    }
 	
 }
