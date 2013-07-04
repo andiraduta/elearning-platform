@@ -3,7 +3,9 @@
 	
 		<div class="span8">
 		
-			<h3>Adauga eveniment</h3>
+			<p><a href="<?php echo URL; ?>index.php?url=cursuri/cursurile_mele" class="btn">inapoi la cursuri</a></p>
+		
+			<h3>Adauga eveniment <small>(colocviu, seminar, examen, etc.)</small></h3>
 			
 			<?php echo isset($mesaj) ? $mesaj : ''; ?>
 			
