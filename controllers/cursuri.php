@@ -293,6 +293,36 @@ class Cursuri extends Controller {
 		$this->view->render('adauga_eveniment', $data, false);
 	}
 	
+	public function adauga_utilizatori_curs($id_curs) {
+		$data = array();
+		$this->incarcaModel('utilizator');
+		$data['id_curs'] = $id_curs;
+		$data['studenti'] = $this->utilizator->lista_studenti();
+		$utilizatori = $this->cursuri->lista_utilizatori_curs($id_curs);
+		$data['utilizatori_curs'] = array();
+		if(!empty($utilizatori)) {
+		foreach($utilizatori as $utilizator) {
+			$data['utilizatori_curs'][] = $utilizator['id_utilizator'];
+		}
+		}
+		$this->view->render('adauga_utilizatori_curs', $data, false);
+	}
+	
+	public function ajax_adauga_utilizator_curs() {
+		header('Content-Type: application/json');
+        if( isset($_POST['id_curs']) && isset($_POST['id_utilizator']) ) {
+            $id_curs = (int) $_POST['id_curs'];
+            $id_utilizator = (int) $_POST['id_utilizator'];
+            $activ = (int) $_POST['activat'];  
+            if( $this->cursuri->adauga_utilizator_curs( $id_curs, $id_utilizator, $activ ) ) {
+                echo json_encode(array('error' => 'false', 'mesaj' => 'ok')); 
+            } else {
+                echo json_encode(array('error' => 'true', 'mesaj' => 'A intervenit o eroare in momentul salvarii datelor!')); 
+            }
+        }
+        exit();
+	}
+	
 	public function calendar() {
 		$data = array();
 		$data['evenimente'] = $this->cursuri->evenimente_student($_SESSION['id_utilizator']);
