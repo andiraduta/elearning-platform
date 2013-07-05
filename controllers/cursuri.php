@@ -32,6 +32,7 @@ class Cursuri extends Controller {
 		$data['id_curs'] = $id_curs;
 		$data['detalii_curs'] = $this->cursuri->detalii_curs($id_curs);
 		$data['discutii'] = $this->cursuri->discutii_forum($data['detalii_curs']['id_forum']);
+		$data['activitati'] = $this->cursuri->activitati_curs($id_curs);
 		$this->view->render('curs', $data, false);
 	}
 	
@@ -327,6 +328,56 @@ class Cursuri extends Controller {
 		$data = array();
 		$data['evenimente'] = $this->cursuri->evenimente_student($_SESSION['id_utilizator']);
 		$this->view->render('calendar', $data, false);
+	}
+	
+	public function adauga_activitate_curs($id_curs) {
+		if( isset($_POST['continua']) && isset($_POST['activitate']) ) {
+			$activit = explode('_', $_POST['activitate']);
+			$activitate = $activit[0];
+			$id_tip_activitate = $activit[1];
+			header("Location: index.php?url=cursuri/adauga_activitate_".(strip_tags($activitate))."/".(int) $id_curs."_".(int) $id_tip_activitate);
+			exit();
+		}
+		$data = array();
+		$data['id_curs'] = $id_curs;
+		$data['tipuri_activitati'] = $this->cursuri->tipuri_activitati();
+		$this->view->render('selecteaza_activitate_curs', $data, false);
+	}
+	
+	public function adauga_activitate_url($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_tip_activitate = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('nume_url', 'NUME URL', 'trim|obligatoriu');
+			$validare_formular->set_rules('url', 'URL', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+                    'id_curs' => $id_curs,
+					'tip_activitate' => $id_tip_activitate,
+                    'titlu' => $_POST['titlu'],
+                    'nume_url' => $_POST['nume_url'],
+					'url' => $_POST['url']
+                );
+                // datele au fost introduse
+                if( $this->cursuri->adauga_activitate_url($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Activitatea a fost adaugata! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_curs'] = $id_curs;
+		$data['id_tip_activitate'] = $id_tip_activitate;
+		$this->view->render('adauga_activitate_url', $data, false);
 	}
 
 } 
