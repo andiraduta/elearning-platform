@@ -20,6 +20,7 @@
 						<?php
 						function afiseaza_categorii($categorii_cursuri, $nivel = 0) {
 							$afiseaza = '';
+							
 							foreach($categorii_cursuri as $categorie) {
 								$afiseaza .= '<tr>';
 								$afiseaza .= '<td>'.($nivel > 0 ? str_repeat('-', $nivel*2).' ' : '') . $categorie['titlu'].'</td>';
@@ -32,6 +33,8 @@
 										$nivel = 1;
 									}
 									$afiseaza .= afiseaza_categorii($categorie['subcategorii'], $nivel);
+								} else {
+								//$nivel = $nivel > 0 ? $nivel-- : $nivel;
 								}
 							}
 							return $afiseaza;

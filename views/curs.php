@@ -9,6 +9,7 @@
 			
 			<div class="well">
 				<h4>Forum discutii</h4>
+				<?php if(are_rol('profesor') || are_rol('administrator')) { ?>
 				<p><a href="<?php echo URL.'index.php?url=cursuri/adauga_subiect_discutie/'.$id_curs.'_'.$detalii_curs['id_forum']; ?>" class="btn">Adauga subiect de discutie</a></p>
 				<?php
 				if( !empty($discutii) ) {
@@ -25,10 +26,31 @@
 				?>
 				<p>Nu exista subiecte de discutie in acest moment.</p>
 				<?php } ?>
+				<?php } ?>
 			</div>
 			
-			<p><a href="#" class="btn">Adauga activitate</a> </p>
+			<h3>Activitati curs</h3>
+			<?php if(are_rol('profesor') || are_rol('administrator')) { ?>
+			<p><a href="<?php echo URL; ?>index.php?url=cursuri/adauga_activitate_curs/<?php echo $id_curs; ?>" class="btn">Adauga activitate</a> </p>
+			<?php } ?>
+			<?php
+			if( !empty($activitati) ) {
+			foreach( $activitati as $activitate ) {
+				switch($activitate['tip_activitate']) {
+					case "url":
+						?>
+						<h4><?php echo $activitate['titlu']; ?></h4>
+						<div class="well">
+							<p>Legatura externa: <a href="<?php echo $activitate['link']; ?>"><?php echo $activitate['nume_url']; ?></a></p>
+						</div>
+						<?php
+						break;
+				}
+			}
+			} else {
+			?>
 			<p>Nu exista activitati in acest moment.</p>
+			<?php } ?>
 		
 		</div>
 	
