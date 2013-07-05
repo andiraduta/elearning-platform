@@ -38,13 +38,27 @@ INSERT INTO `cursuri` (`id_curs`, `id_categorie`, `id_responsabil`, `titlu`, `de
 -- Table structure for table `cursuri_activitati`
 --
 
-CREATE TABLE IF NOT EXISTS `cursuri_activitati` (
-  `id_activitate` int(10) NOT NULL AUTO_INCREMENT,
-  `id_tip_activitate` int(10) NOT NULL,
-  `titlu` varchar(255) NOT NULL,
-  `data_creare` datetime NOT NULL,
-  PRIMARY KEY (`id_activitate`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE TABLE `cursuri_activitati` (
+ `id_activitate` int(10) NOT NULL AUTO_INCREMENT,
+ `id_curs` int(15) NOT NULL,
+ `id_tip_activitate` int(15) NOT NULL,
+ PRIMARY KEY (`id_activitate`),
+ KEY `id_curs` (`id_curs`),
+ KEY `id_tip_activitate` (`id_tip_activitate`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `cursuri_activitati_url` (
+ `id_activitate_url` int(15) NOT NULL AUTO_INCREMENT,
+ `id_activitate` int(15) NOT NULL,
+ `titlu` varchar(255) NOT NULL,
+ `nume_url` varchar(200) NOT NULL,
+ `link` varchar(255) NOT NULL,
+ `data_creare` datetime NOT NULL,
+ PRIMARY KEY (`id_activitate_url`),
+ KEY `id_activitate` (`id_activitate`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 --
 -- Dumping data for table `cursuri_activitati`
@@ -88,6 +102,11 @@ CREATE TABLE IF NOT EXISTS `cursuri_tipuri_activitati` (
   `tip_activitate` varchar(150) NOT NULL,
   PRIMARY KEY (`id_tip_activitate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+INSERT INTO `cursuri_tipuri_activitati` (`id_tip_activitate`, `tip_activitate`) VALUES
+(1, 'url'),
+(2, 'fisier'),
+(3, 'lectie');
 
 --
 -- Dumping data for table `cursuri_tipuri_activitati`
