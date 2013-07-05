@@ -144,6 +144,44 @@ class Cursuri_Model extends Model {
 		return mysql_fetch_assoc($query);
 	}
 	
+	public function tipuri_activitati() {
+		$sql = "SELECT * FROM cursuri_tipuri_activitati;";
+		$query = mysql_query($sql);
+		$activitati = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$activitati[] = $row;
+		}
+		
+		return $activitati;
+	}
+	
+	public function activitati_curs($id_curs) {
+		$sql = "SELECT cta.tip_activitate, cau.*
+			FROM cursuri_activitati ca 
+			INNER JOIN cursuri_tipuri_activitati cta ON ca.id_tip_activitate = cta.id_tip_activitate
+			LEFT JOIN cursuri_activitati_url cau ON ca.id_activitate = cau.id_activitate 
+			WHERE ca.id_curs = ".(int) $id_curs;
+		$query = mysql_query($sql);
+		$activitati = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$activitati[] = $row;
+		}
+		
+		return $activitati;
+	}
+	
+	public function adauga_activitate_url($data) {
+		$sql = "INSERT INTO cursuri_activitati (id_activitate, id_curs, id_tip_activitate) VALUES (NULL, ".(int) $data['id_curs'].", ".(int) $data['tip_activitate'].");";
+		if(mysql_query($sql)) {
+			$id_activitate = mysql_insert_id();
+			$sql = "INSERT INTO cursuri_activitati_url (id_activitate_url, id_activitate, titlu, nume_url, link, data_creare) VALUES (NULL, $id_activitate, '".mysql_real_escape_string($data['titlu'])."', '".mysql_real_escape_string($data['nume_url'])."', '".mysql_real_escape_string($data['url'])."', '".date('Y-m-d H:i:s', time())."');";
+			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function discutii_forum($id_forum) {
 		$sql = "SELECT fd.*, count(id_postare) as 'nr_postari' FROM forum_discutii fd LEFT JOIN forum_postari p ON fd.id_discutie = p.id_discutie  WHERE fd.id_forum = ".(int) $id_forum.' GROUP BY fd.id_discutie';
 		$query = mysql_query($sql);
