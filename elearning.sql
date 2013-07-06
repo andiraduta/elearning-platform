@@ -1,3 +1,4 @@
+
 --
 -- Database: `elearning`
 --
@@ -19,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `cursuri` (
   PRIMARY KEY (`id_curs`),
   KEY `id_responsabil` (`id_responsabil`),
   KEY `id_categorie` (`id_categorie`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `cursuri`
@@ -38,32 +39,95 @@ INSERT INTO `cursuri` (`id_curs`, `id_categorie`, `id_responsabil`, `titlu`, `de
 -- Table structure for table `cursuri_activitati`
 --
 
-CREATE TABLE `cursuri_activitati` (
- `id_activitate` int(10) NOT NULL AUTO_INCREMENT,
- `id_curs` int(15) NOT NULL,
- `id_tip_activitate` int(15) NOT NULL,
- PRIMARY KEY (`id_activitate`),
- KEY `id_curs` (`id_curs`),
- KEY `id_tip_activitate` (`id_tip_activitate`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `cursuri_activitati_url` (
- `id_activitate_url` int(15) NOT NULL AUTO_INCREMENT,
- `id_activitate` int(15) NOT NULL,
- `titlu` varchar(255) NOT NULL,
- `nume_url` varchar(200) NOT NULL,
- `link` varchar(255) NOT NULL,
- `data_creare` datetime NOT NULL,
- PRIMARY KEY (`id_activitate_url`),
- KEY `id_activitate` (`id_activitate`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
+CREATE TABLE IF NOT EXISTS `cursuri_activitati` (
+  `id_activitate` int(10) NOT NULL AUTO_INCREMENT,
+  `id_curs` int(15) NOT NULL,
+  `id_tip_activitate` int(15) NOT NULL,
+  PRIMARY KEY (`id_activitate`),
+  KEY `id_curs` (`id_curs`),
+  KEY `id_tip_activitate` (`id_tip_activitate`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
 -- Dumping data for table `cursuri_activitati`
 --
 
+INSERT INTO `cursuri_activitati` (`id_activitate`, `id_curs`, `id_tip_activitate`) VALUES
+(1, 5, 1),
+(7, 3, 1),
+(13, 1, 1),
+(4, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cursuri_activitati_fisier`
+--
+
+CREATE TABLE IF NOT EXISTS `cursuri_activitati_fisier` (
+  `id_activitate_fisier` int(15) NOT NULL AUTO_INCREMENT,
+  `id_activitate` int(15) NOT NULL,
+  `titlu` varchar(200) NOT NULL,
+  `descriere` varchar(200) NOT NULL,
+  `fisier` varchar(200) NOT NULL,
+  `data_creare` datetime NOT NULL,
+  PRIMARY KEY (`id_activitate_fisier`),
+  KEY `id_activitate` (`id_activitate`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `cursuri_activitati_fisier`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cursuri_activitati_lectie`
+--
+
+CREATE TABLE IF NOT EXISTS `cursuri_activitati_lectie` (
+  `id_activitate_lectie` int(15) NOT NULL AUTO_INCREMENT,
+  `id_activitate` int(15) NOT NULL,
+  `titlu` varchar(200) NOT NULL,
+  `continut` mediumtext NOT NULL,
+  `data_creare` datetime NOT NULL,
+  PRIMARY KEY (`id_activitate_lectie`),
+  KEY `id_activitate` (`id_activitate`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `cursuri_activitati_lectie`
+--
+
+INSERT INTO `cursuri_activitati_lectie` (`id_activitate_lectie`, `id_activitate`, `titlu`, `continut`, `data_creare`) VALUES
+(1, 4, 'Prefata', 'Grafurile au devenit astazi foarte raspandite datorita ariei largi de aplica-bilitate a acestora, de la aplicatii atat software cat si hardware, la diverseaplicatii ın modelarea sistemelor economice, ın stiintele ingineresti si ın celesociale.<br>Aceasta carte constituie suportul pentru cursurile si laboratoarele sustinu-te de catre autori studentilor de la Facultatea de Stiinte Exacte din cadrulUniversitatii ”Aurel Vlaicu” Arad.Cartea prezinta, dupa o scurta familiarizare cu limbajul utilizat, algoritmiesentiali pentru prelucrarea grafurilor. Sunt tratate subiecte precum: par-curgerea unui graf, matricea drumurilor, componente conexe si tare conexe,drumuri de valoare optima, arbore de acoperire minim, ﬂuxuri maxime, pro-bleme de afectare si ordonantare.<br>Multumim de pe acum tuturor celor care prin sugestii si observatii ne vorajuta la ımbunatatirea unei eventuale reeditari.<br>', '2013-07-06 13:13:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cursuri_activitati_url`
+--
+
+CREATE TABLE IF NOT EXISTS `cursuri_activitati_url` (
+  `id_activitate_url` int(15) NOT NULL AUTO_INCREMENT,
+  `id_activitate` int(15) NOT NULL,
+  `titlu` varchar(255) NOT NULL,
+  `nume_url` varchar(200) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `data_creare` datetime NOT NULL,
+  PRIMARY KEY (`id_activitate_url`),
+  KEY `id_activitate` (`id_activitate`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `cursuri_activitati_url`
+--
+
+INSERT INTO `cursuri_activitati_url` (`id_activitate_url`, `id_activitate`, `titlu`, `nume_url`, `link`, `data_creare`) VALUES
+(1, 1, 'Informatii utile', 'Google', 'http://google.ro', '2013-07-05 21:40:04'),
+(2, 7, 'test', 'Google', 'http://www.google.ro', '2013-07-06 14:02:05'),
+(3, 13, 'Informatii utile', 'Google', 'http://www.google.ro', '2013-07-06 21:49:54');
 
 -- --------------------------------------------------------
 
@@ -79,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `cursuri_categorii` (
   `data_creare` datetime NOT NULL,
   PRIMARY KEY (`id_categorie`),
   KEY `id_parinte` (`id_parinte`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `cursuri_categorii`
@@ -101,17 +165,16 @@ CREATE TABLE IF NOT EXISTS `cursuri_tipuri_activitati` (
   `id_tip_activitate` int(10) NOT NULL AUTO_INCREMENT,
   `tip_activitate` varchar(150) NOT NULL,
   PRIMARY KEY (`id_tip_activitate`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-INSERT INTO `cursuri_tipuri_activitati` (`id_tip_activitate`, `tip_activitate`) VALUES
-(1, 'url'),
-(2, 'fisier'),
-(3, 'lectie');
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `cursuri_tipuri_activitati`
 --
 
+INSERT INTO `cursuri_tipuri_activitati` (`id_tip_activitate`, `tip_activitate`) VALUES
+(1, 'url'),
+(2, 'fisier'),
+(3, 'lectie');
 
 -- --------------------------------------------------------
 
@@ -126,14 +189,16 @@ CREATE TABLE IF NOT EXISTS `cursuri_utilizatori` (
   PRIMARY KEY (`id_curs_utilizator`),
   KEY `id_curs` (`id_curs`),
   KEY `id_utilizator` (`id_utilizator`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `cursuri_utilizatori`
 --
 
 INSERT INTO `cursuri_utilizatori` (`id_curs_utilizator`, `id_curs`, `id_utilizator`) VALUES
-(1, 3, 3);
+(1, 3, 3),
+(4, 5, 10),
+(3, 3, 10);
 
 -- --------------------------------------------------------
 
@@ -151,14 +216,15 @@ CREATE TABLE IF NOT EXISTS `evenimente` (
   PRIMARY KEY (`id_eveniment`),
   KEY `id_curs` (`id_curs`),
   KEY `id_utilizator` (`id_utilizator`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `evenimente`
 --
 
 INSERT INTO `evenimente` (`id_eveniment`, `id_curs`, `id_utilizator`, `titlu`, `data_eveniment`, `data_creare`) VALUES
-(1, 3, 1, 'Test de verificare', '2013-06-12 00:00:00', '2013-07-01 00:24:08');
+(1, 3, 1, 'Test de verificare', '2013-06-12 00:00:00', '2013-07-01 00:24:08'),
+(3, 1, 2, 'Seminar', '2013-07-13 00:00:00', '2013-07-06 22:07:40');
 
 -- --------------------------------------------------------
 
@@ -174,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `forum` (
   `data_creare` datetime NOT NULL,
   PRIMARY KEY (`id_forum`),
   KEY `id_curs` (`id_curs`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `forum`
@@ -397,7 +463,8 @@ INSERT INTO `roluri_utilizatori` (`id_utilizator`, `id_rol`) VALUES
 (6, 2),
 (7, 2),
 (8, 2),
-(9, 2);
+(9, 2),
+(10, 3);
 
 -- --------------------------------------------------------
 
@@ -418,18 +485,19 @@ CREATE TABLE IF NOT EXISTS `utilizatori` (
   `ultima_activitate` datetime NOT NULL,
   `activ` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_utilizator`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `utilizatori`
 --
 
 INSERT INTO `utilizatori` (`id_utilizator`, `email`, `username`, `parola`, `nume`, `telefon`, `localitate`, `adresa`, `data_creare`, `ultima_activitate`, `activ`) VALUES
-(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', '2013-07-01 00:52:27', 1),
-(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', '2013-06-30 16:16:31', 1),
-(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', '2013-07-01 00:46:55', 1),
+(1, 'admin@site.ro', 'admin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Iulian Burcea', '', 'Bucuresti', '', '2013-05-10 00:13:04', '2013-07-06 22:08:02', 1),
+(2, 'profesor@test.ro', 'profesor', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emil Popescu', '', '', '', '2013-05-16 23:01:56', '2013-07-06 21:54:33', 1),
+(3, 'student@test.ro', 'student', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Mihai Constantin', '', '', '', '2013-05-16 23:02:17', '2013-07-06 23:46:11', 1),
 (4, 'constantin@universitate.ro', 'constantin', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Constantin Enache', '', 'Bucuresti', '', '2013-06-11 22:04:36', '0000-00-00 00:00:00', 1),
 (5, 'ciprian@universitate.ro', 'ciprian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Ciprian Enescu', '', 'Bucuresti', '', '2013-06-11 22:05:41', '0000-00-00 00:00:00', 1),
 (6, 'laurentiu@universitate.ro', 'laurentiu', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Laurentiu Constantin', '', '', '', '2013-06-11 22:06:39', '0000-00-00 00:00:00', 1),
 (7, 'maria@universitate.ro', 'maria', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Maria Georgescu', '', 'Bucuresti', '', '2013-06-11 22:07:06', '0000-00-00 00:00:00', 1),
-(8, 'emilian@universitate.ro', 'emilian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emilian Vaduva', '', '', '', '2013-06-11 22:07:33', '0000-00-00 00:00:00', 1);
+(8, 'emilian@universitate.ro', 'emilian', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Emilian Vaduva', '', '', '', '2013-06-11 22:07:33', '0000-00-00 00:00:00', 1),
+(10, 'gigel@universitate.ro', 'gigel', 'fe01ce2a7fbac8fafaed7c982a04e229', 'Gigel Popescu', '', '', '', '2013-07-04 22:39:23', '2013-07-06 21:52:59', 1);
