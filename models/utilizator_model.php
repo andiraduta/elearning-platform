@@ -83,7 +83,7 @@ class Utilizator_Model extends Model {
     }
     
     public function toti_utilizatorii($inceput = 0, $limita = 10) {
-        $sql = "SELECT * FROM utilizatori LIMIT $inceput, $limita;";
+        $sql = "SELECT * FROM utilizatori;";
         $query = mysql_query($sql);
         $utilizatori = array();
         while($row = mysql_fetch_assoc($query)) {
@@ -125,8 +125,7 @@ class Utilizator_Model extends Model {
             FROM `utilizatori` u
             INNER JOIN `roluri_utilizatori` ru ON u.id_utilizator = ru.id_utilizator
             INNER JOIN `roluri` r ON ru.id_rol = r.id_rol 
-			ORDER BY nume_rol, username
-            LIMIT $inceput, $limita;";
+			ORDER BY nume_rol, username;";
         $query = mysql_query($sql);
         $utilizatori = array();
         while($row = mysql_fetch_assoc($query)) {

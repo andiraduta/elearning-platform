@@ -18,6 +18,23 @@ class Cursuri_Model extends Model {
 		}
 	}
 	
+	public function sterge_curs($id_curs) {
+		$sql = "DELETE FROM cursuri WHERE id_curs = ".(int) $id_curs;
+		if( mysql_query($sql) ) {
+			$sql = "DELETE FROM forum WHERE id_curs = ".(int) $id_curs;
+			mysql_query($sql);
+			$sql = "DELETE FROM cursuri_activitati WHERE id_curs = ".(int) $id_curs;
+			mysql_query($sql);
+			$sql = "DELETE FROM cursuri_utilizatori WHERE id_curs = ".(int) $id_curs;
+			mysql_query($sql);
+			$sql = "DELETE FROM evenimente WHERE id_curs = ".(int) $id_curs;
+			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function detalii_curs($id_curs) {
 		$sql = "SELECT c . * , u.id_utilizator, u.username, u.nume, cc.titlu AS 'categorie', f.id_forum, f.nume AS 'nume_forum'
 			FROM cursuri c
@@ -58,11 +75,28 @@ class Cursuri_Model extends Model {
 		return $cursuri;
 	}
 	
-	public function lista_cursuri_utilizator() {
+	public function lista_cursuri_profesor($id_utilizator) {
 		$sql = "SELECT c.*, u.id_utilizator, u.username, u.nume, cc.titlu as 'categorie'  
 			FROM cursuri c
 			INNER JOIN cursuri_categorii cc ON c.id_categorie = cc.id_categorie
 			INNER JOIN utilizatori u ON c.id_responsabil = u.id_utilizator 
+			WHERE c.id_responsabil = ".(int) $id_utilizator." 
+			ORDER BY c.titlu";
+		$query = mysql_query($sql);
+		$cursuri = array();
+		while( $row = mysql_fetch_assoc($query) ) {
+			$cursuri[] = $row;
+		}
+		return $cursuri;
+	}
+	
+	public function lista_cursuri_student($id_utilizator) {
+		$sql = "SELECT c.*, u.id_utilizator, u.username, u.nume, cc.titlu as 'categorie'  
+			FROM cursuri c
+			INNER JOIN cursuri_categorii cc ON c.id_categorie = cc.id_categorie
+			INNER JOIN cursuri_utilizatori cu ON c.id_curs = cu.id_curs 
+			INNER JOIN utilizatori u ON cu.id_utilizator = u.id_utilizator 
+			WHERE cu.id_utilizator = ".(int) $id_utilizator."
 			ORDER BY c.titlu";
 		$query = mysql_query($sql);
 		$cursuri = array();
@@ -84,6 +118,20 @@ class Cursuri_Model extends Model {
 			$utilizatori[] = $row;
 		}
 		return $utilizatori;
+	}
+	
+	public function student_are_acces($id_utilizator, $id_curs) {
+		$sql = "SELECT id_utilizator
+			FROM cursuri_utilizatori 
+			WHERE id_curs = ".(int) $id_curs." AND id_utilizator = ".(int) $id_utilizator." 
+			LIMIT 1";
+		$query = mysql_query($sql);
+		$row = mysql_fetch_assoc($query);
+		if($row['id_utilizator'] > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public function categorii_cursuri() {
@@ -144,6 +192,15 @@ class Cursuri_Model extends Model {
 		return mysql_fetch_assoc($query);
 	}
 	
+	public function sterge_categorie($id_categorie) {
+		$sql = "DELETE FROM cursuri_categorii WHERE id_categorie = ".(int) $id_categorie;
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function tipuri_activitati() {
 		$sql = "SELECT * FROM cursuri_tipuri_activitati;";
 		$query = mysql_query($sql);
@@ -156,11 +213,17 @@ class Cursuri_Model extends Model {
 	}
 	
 	public function activitati_curs($id_curs) {
-		$sql = "SELECT cta.tip_activitate, cau.*
+		$sql = "SELECT cta.tip_activitate, ca.id_activitate,
+				cau.titlu as 'titlu_activitate_url', cau.nume_url, cau.link,
+				cal.titlu as 'titlu_activitate_lectie', cal.continut,
+				caf.titlu as 'titlu_activitate_fisier', caf.descriere, caf.fisier
 			FROM cursuri_activitati ca 
 			INNER JOIN cursuri_tipuri_activitati cta ON ca.id_tip_activitate = cta.id_tip_activitate
 			LEFT JOIN cursuri_activitati_url cau ON ca.id_activitate = cau.id_activitate 
-			WHERE ca.id_curs = ".(int) $id_curs;
+			LEFT JOIN cursuri_activitati_lectie cal ON ca.id_activitate = cal.id_activitate 
+			LEFT JOIN cursuri_activitati_fisier caf ON ca.id_activitate = caf.id_activitate 
+			WHERE ca.id_curs = ".(int) $id_curs."
+			ORDER BY ca.id_activitate DESC";
 		$query = mysql_query($sql);
 		$activitati = array();
 		while( $row = mysql_fetch_assoc($query) ) {
@@ -176,6 +239,72 @@ class Cursuri_Model extends Model {
 			$id_activitate = mysql_insert_id();
 			$sql = "INSERT INTO cursuri_activitati_url (id_activitate_url, id_activitate, titlu, nume_url, link, data_creare) VALUES (NULL, $id_activitate, '".mysql_real_escape_string($data['titlu'])."', '".mysql_real_escape_string($data['nume_url'])."', '".mysql_real_escape_string($data['url'])."', '".date('Y-m-d H:i:s', time())."');";
 			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function adauga_activitate_fisier($data) {
+		$sql = "INSERT INTO cursuri_activitati (id_activitate, id_curs, id_tip_activitate) VALUES (NULL, ".(int) $data['id_curs'].", ".(int) $data['tip_activitate'].");";
+		if(mysql_query($sql)) {
+			$id_activitate = mysql_insert_id();
+			$sql = "INSERT INTO cursuri_activitati_fisier (id_activitate_fisier, id_activitate, titlu, descriere, fisier, data_creare) VALUES (NULL, $id_activitate, '".mysql_real_escape_string($data['titlu'])."', '".mysql_real_escape_string($data['descriere'])."', '".mysql_real_escape_string($data['fisier'])."', '".date('Y-m-d H:i:s', time())."');";
+			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function adauga_activitate_lectie($data) {
+		$sql = "INSERT INTO cursuri_activitati (id_activitate, id_curs, id_tip_activitate) VALUES (NULL, ".(int) $data['id_curs'].", ".(int) $data['tip_activitate'].");";
+		if(mysql_query($sql)) {
+			$id_activitate = mysql_insert_id();
+			$sql = "INSERT INTO cursuri_activitati_lectie (id_activitate_lectie, id_activitate, titlu, continut, data_creare) VALUES (NULL, $id_activitate, '".mysql_real_escape_string($data['titlu'])."', '".mysql_real_escape_string($data['continut'])."', '".date('Y-m-d H:i:s', time())."');";
+			mysql_query($sql) or die(mysql_error());
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function sterge_activitate_curs($id_activitate, $tip) {
+		$sql = "DELETE FROM cursuri_activitati WHERE id_activitate = ".(int) $id_activitate;
+		if(mysql_query($sql)) {
+			if($tip == 'fisier') {
+				$sql = "SELECT * FROM cursuri_activitati_fisier WHERE id_activitate = ".(int) $id_activitate;
+				$query = mysql_query($sql);
+				$row = mysql_fetch_assoc($query);
+				if( $row['fisier'] != "" )
+					unlink("./".$row['fisier']);
+			}
+			$sql = "DELETE FROM cursuri_activitati_".$tip." WHERE id_activitate = ".(int) $id_activitate;
+			mysql_query($sql);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function detalii_activitate_tip($id_activitate, $tip) {
+		$sql = "SELECT * FROM cursuri_activitati_".$tip." WHERE id_activitate = ".(int) $id_activitate;
+		$query = mysql_query($sql);
+		return mysql_fetch_assoc($query);
+	}
+	
+	public function modifica_activitate_lectie($data) {
+		$sql = "UPDATE cursuri_activitati_lectie SET titlu = '".mysql_real_escape_string($data['titlu'])."', continut = '".mysql_real_escape_string($data['continut'])."' WHERE id_activitate = ".(int) $data['id_activitate'];
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function modifica_activitate_url($data) {
+		$sql = "UPDATE cursuri_activitati_url SET titlu = '".mysql_real_escape_string($data['titlu'])."', nume_url = '".mysql_real_escape_string($data['nume_url'])."', link = '".mysql_real_escape_string($data['url'])."' WHERE id_activitate = ".(int) $data['id_activitate'];
+		if(mysql_query($sql)) {
 			return true;
 		} else {
 			return false;
@@ -261,13 +390,37 @@ class Cursuri_Model extends Model {
 		}
 	}
 	
+	public function sterge_eveniment($id_eveniment) {
+		$sql = "DELETE FROM evenimente WHERE id_eveniment = ".(int) $id_eveniment;
+		if(mysql_query($sql)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function evenimente_student($id_utilizator) {
-		$sql = "SELECT e.titlu, e.data_eveniment, c.titlu as 'curs' 
+		$sql = "SELECT e.id_eveniment, e.titlu, e.data_eveniment, c.titlu as 'curs' 
 			FROM `evenimente` e 
 			INNER JOIN cursuri c ON e.id_curs = c.id_curs 
 			INNER JOIN cursuri_utilizatori cu ON c.id_curs = cu.id_curs 
 			INNER JOIN utilizatori u ON cu.id_utilizator = u.id_utilizator
 			WHERE cu.id_utilizator = ".(int) $id_utilizator.";";
+		$query = mysql_query($sql);
+		$evenimente = array();
+		while($row = mysql_fetch_assoc($query)) {
+			$evenimente[] = $row;
+		}
+		
+		return $evenimente;
+	}
+	
+	public function evenimente_profesor($id_utilizator) {
+		$sql = "SELECT e.id_eveniment, e.titlu, e.data_eveniment, c.titlu as 'curs' 
+			FROM `evenimente` e 
+			INNER JOIN cursuri c ON e.id_curs = c.id_curs 
+			INNER JOIN utilizatori u ON c.id_responsabil = u.id_utilizator
+			WHERE c.id_responsabil = ".(int) $id_utilizator.";";
 		$query = mysql_query($sql);
 		$evenimente = array();
 		while($row = mysql_fetch_assoc($query)) {
