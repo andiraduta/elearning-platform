@@ -2,14 +2,14 @@
 	<div class="row">
 	
 		<div class="span8">
-		
+			
 			<p><a href="<?php echo URL; ?>index.php?url=cursuri/curs/<?php echo $id_curs; ?>" class="btn">inapoi la curs</a></p>
 		
-			<h3>Adauga url</h3>
+			<h3>Adauga lectie</h3>
 			
 			<?php echo isset($mesaj) ? $mesaj : ''; ?>
 			
-			<form action="<?php echo URL; ?>index.php?url=cursuri/adauga_activitate_url/<?php echo $id_curs,'_',$id_tip_activitate; ?>" method="POST" class="form-horizontal">
+			<form action="<?php echo URL; ?>index.php?url=cursuri/adauga_activitate_lectie/<?php echo $id_curs,'_',$id_tip_activitate; ?>" method="POST" class="form-horizontal">
 				<fieldset>
 					
 					<div class="control-group">
@@ -20,16 +20,9 @@
 					</div>
 					
 					<div class="control-group">
-						<label for="nume_url" class="control-label">Nume url</label>
+						<label for="continut" class="control-label">Continut lectie</label>
 						<div class="controls">
-							<input type="text" name="nume_url" id="nume_url" class="span6" value="<?php echo isset($_POST['nume_url']) ? $_POST['nume_url'] : ''; ?>" />
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="url" class="control-label">Url</label>
-						<div class="controls">
-							<input type="text" name="url" id="url" placeholder="http://www.exemplu.ro" class="span6" value="<?php echo isset($_POST['url']) ? $_POST['url'] : ''; ?>" />
+							<textarea name="continut" id="continut" class="span6" cols="30" rows="15"><?php echo isset($_POST['continut']) ? $_POST['continut'] : ''; ?></textarea>
 						</div>
 					</div>
 					
@@ -42,3 +35,7 @@
 		</div>
 	
 	</div>
+	
+	<script>
+	$('#continut').wysihtml5();
+	</script>

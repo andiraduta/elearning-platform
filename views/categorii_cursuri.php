@@ -4,9 +4,11 @@
 		<div class="span8">
 		
 			<h3>Categorii de cursuri</h3>
+			
+				<?php echo isset($mesaj) ? $mesaj : ''; ?>
+			
 				<p>
-					<a href="<?php echo URL; ?>index.php?url=cursuri/adauga_curs" class="btn btn-success"><i class="icon-plus icon-white"></i> Adauga curs</a> 
-					<a href="<?php echo URL; ?>index.php?url=cursuri/adauga_categorie" class="btn btn-success"><i class="icon-plus icon-white"></i> Adauga categorie</a>
+					<a href="<?php echo URL; ?>index.php?url=cursuri/adauga_categorie" class="btn btn-success"><i class="icon-plus icon-white"></i> Adauga categorie cursuri</a>
 				</p>
 				<br />
 				<table class="table table-bordered table-striped">
@@ -24,7 +26,10 @@
 							foreach($categorii_cursuri as $categorie) {
 								$afiseaza .= '<tr>';
 								$afiseaza .= '<td>'.($nivel > 0 ? str_repeat('-', $nivel*2).' ' : '') . $categorie['titlu'].'</td>';
-								$afiseaza .= '<td><a href="'.URL.'index.php?url=cursuri/modifica_categorie/'.$categorie['id_categorie'].'" class="btn btn-info"><i class="icon-pencil icon-white"></i> Modifica</a></td>';
+								$afiseaza .= '<td>
+										<a href="'.URL.'index.php?url=cursuri/modifica_categorie/'.$categorie['id_categorie'].'" class="btn btn-info"><i class="icon-pencil icon-white"></i> Modifica</a>
+										<a href="'.URL.'index.php?url=cursuri/sterge_categorie/'.$categorie['id_categorie'].'" class="btn btn-error"><i class="icon icon-remove"></i></a>
+									</td>';
 								$afiseaza .= '</tr>';
 								if( !empty($categorie['subcategorii']) ) {
 									if($nivel > 0) {

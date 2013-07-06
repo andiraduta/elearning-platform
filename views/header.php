@@ -43,11 +43,11 @@
 				</p>
 				<ul class="nav">
 					<li class="active"><a href="<?php echo URL.'index.php' ?>">Acasa</a></li>
-					<?php if( !este_logat() ) { ?>
+					<?php /* if( !este_logat() ) { ?>
 					<li><a href="<?php echo URL.'index.php?url=login'; ?>">Cursuri</a></li>
 					<?php } else { ?>
 					<li><a href="<?php echo URL.'index.php?url=cursuri/cursurile_mele'; ?>">Cursuri</a></li>
-					<?php } ?>
+					<?php } */ ?>
 					<li><a href="<?php echo URL.'index.php?url=noutati'; ?>">Noutati</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
@@ -84,7 +84,7 @@
 					<li><a href="<?php echo URL.'index.php?url=mesaje' ?>"><i class="icon icon-comment"></i> Mesaje &nbsp; <?php echo $nr_mesaje_necitite > 0 ? '<span class="badge badge-important">'.$nr_mesaje_necitite.'</span>' : ''; ?></a></li>
 					<?php if( are_rol('administrator') ) { ?>
 					<li><a href="<?php echo URL.'index.php?url=noutati/adauga' ?>"><i class="icon icon-star"></i> Adauga noutati</a></li>
-					<li><a href="<?php echo URL.'index.php?url=cursuri/categorii' ?>"><i class="icon icon-folder-open"></i> Adauga cursuri</a></li>
+					<li><a href="<?php echo URL.'index.php?url=cursuri/categorii' ?>"><i class="icon icon-folder-open"></i> Adauga categorie</a></li>
 					<li class="nav-header">Setari avansate</li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/lista_utilizatori' ?>"><i class="icon icon-user"></i> Utilizatori</a></li>
 					<li><a href="<?php echo URL.'index.php?url=utilizator/permisiuni_utilizatori' ?>"><i class="icon icon-lock"></i> Permisiuni</a></li>

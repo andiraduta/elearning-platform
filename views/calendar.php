@@ -44,7 +44,12 @@
 				if(!empty($evenimente)) {
 					foreach($evenimente as $eveniment) {
 					?>
-					<li><?php echo date('d-m-Y', strtotime($eveniment['data_eveniment'])),' - ', $eveniment['titlu'], ' (Curs: ', $eveniment['curs'], ')'; ?></li>
+					<li>
+						<?php echo date('d-m-Y', strtotime($eveniment['data_eveniment'])),' - ', $eveniment['titlu'], ' (Curs: ', $eveniment['curs'], ')'; ?>
+						<?php if( are_rol('profesor') ) { ?>
+						&nbsp; <a href="<?php echo URL.'index.php?url=cursuri/sterge_eveniment/'.$eveniment['id_eveniment']; ?>"><i class="icon icon-remove"></i></a>
+						<?php } ?>
+					</li>
 					<?php
 					}
 				} else {

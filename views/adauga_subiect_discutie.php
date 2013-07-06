@@ -3,6 +3,8 @@
 	
 		<div class="span8">
 		
+			<p><a href="<?php echo URL; ?>index.php?url=cursuri/curs/<?php echo $id_curs; ?>" class="btn">inapoi la curs</a></p>
+		
 			<h3>Adauga subiect de discutie</h3>
 			
 			<?php echo isset($mesaj) ? $mesaj : ''; ?>

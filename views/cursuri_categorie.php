@@ -5,7 +5,8 @@
 		
 			<?php echo isset($mesaj) ? $mesaj : ''; ?>
 		
-			<h2>Cursurile mele <!--<small>cursuri in care sunt inrolat</small>--></h2>
+			<h2><?php echo $categorie['titlu']; ?></h2>
+			<h3>Cursuri</h3>
 			
 			<?php if( are_rol('administrator') ) { ?>
 			<p><a href="<?php echo URL; ?>index.php?url=cursuri/adauga_curs" class="btn btn-success"><i class="icon-plus icon-white"></i> Adauga curs</a> </p>
