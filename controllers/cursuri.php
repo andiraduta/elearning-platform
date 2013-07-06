@@ -15,16 +15,27 @@ class Cursuri extends Controller {
 	
 	public function cursurile_mele() {
 		$data = array();
+		if(isset($_SESSION['mesaj'])) {
+			$data['mesaj'] = $_SESSION['mesaj'];
+			unset($_SESSION['mesaj']);
+		}
+		
 		if(are_rol('administrator')) {
 			$data['cursuri'] = $this->cursuri->lista_cursuri_administrare();
-		} else {
-			$data['cursuri'] = $this->cursuri->lista_cursuri_utilizator((int) $_SESSION['id_utilizator']);
+		} elseif(are_rol('profesor')) {
+			$data['cursuri'] = $this->cursuri->lista_cursuri_profesor((int) $_SESSION['id_utilizator']);
+		} elseif(are_rol('student')) {
+			$data['cursuri'] = $this->cursuri->lista_cursuri_student((int) $_SESSION['id_utilizator']);
 		}
 		$this->view->render('cursurile_mele', $data, false);
 	}
 	
 	public function curs($id_curs) {
 		$data = array();
+		if( are_rol('student') && !$this->cursuri->student_are_acces((int) $_SESSION['id_utilizator'], $id_curs) ) {
+			$this->view->render('curs_fara_acces', $data, false);
+			return;
+		}
 		if(isset($_SESSION['mesaj'])) {
 			$data['mesaj'] = $_SESSION['mesaj'];
 			unset($_SESSION['mesaj']);
@@ -38,8 +49,19 @@ class Cursuri extends Controller {
 	
 	public function categorii() {
 		$data = array();
+		if(isset($_SESSION['mesaj'])) {
+			$data['mesaj'] = $_SESSION['mesaj'];
+			unset($_SESSION['mesaj']);
+		}
 		$data['categorii_cursuri'] = $this->cursuri->categorii_format_tree();
 		$this->view->render('categorii_cursuri', $data, false);
+	}
+	
+	public function categorie($id_categorie) {
+		$data = array();
+		$data['cursuri'] = $this->cursuri->lista_cursuri($id_categorie);
+		$data['categorie'] = $this->cursuri->detalii_categorie($id_categorie);
+		$this->view->render('cursuri_categorie', $data, false);
 	}
 	
 	public function adauga_categorie() {
@@ -101,6 +123,15 @@ class Cursuri extends Controller {
 		$this->view->render('modifica_categorie', $data, false);
 	}
 	
+	public function sterge_categorie($id_categorie) {
+		if($this->cursuri->sterge_categorie($id_categorie)) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Categoria a fost stearsa!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/categorii");
+	}
+	
 	public function adauga_curs() {
 		$data = array();
 		if( isset($_POST['salveaza']) ) {
@@ -134,6 +165,15 @@ class Cursuri extends Controller {
 		$data['profesori'] = $this->utilizator->lista_profesori();
 		$data['categorii_cursuri'] = $this->cursuri->categorii_format_tree();
 		$this->view->render('adauga_curs', $data, false);
+	}
+	
+	public function sterge_curs($id_curs) {
+		if($this->cursuri->sterge_curs($id_curs)) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Cursul a fost sters!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/cursurile_mele");
 	}
 	
 	public function adauga_subiect_discutie($id) {
@@ -326,9 +366,26 @@ class Cursuri extends Controller {
 	
 	public function calendar() {
 		$data = array();
-		$data['evenimente'] = $this->cursuri->evenimente_student($_SESSION['id_utilizator']);
+		if( are_rol('profesor') ) {
+			$data['evenimente'] = $this->cursuri->evenimente_profesor($_SESSION['id_utilizator']);
+		} else {
+			$data['evenimente'] = $this->cursuri->evenimente_student($_SESSION['id_utilizator']);
+		}
 		$this->view->render('calendar', $data, false);
 	}
+	
+	public function sterge_eveniment($id_eveniment) {
+		if($this->cursuri->sterge_eveniment($id_eveniment)) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Evenimentul a fost sters!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/calendar");
+	}
+	
+	/*************************************
+	ACTIVITATI
+	**************************************/
 	
 	public function adauga_activitate_curs($id_curs) {
 		if( isset($_POST['continua']) && isset($_POST['activitate']) ) {
@@ -378,6 +435,198 @@ class Cursuri extends Controller {
 		$data['id_curs'] = $id_curs;
 		$data['id_tip_activitate'] = $id_tip_activitate;
 		$this->view->render('adauga_activitate_url', $data, false);
+	}
+	
+	public function adauga_activitate_lectie($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_tip_activitate = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('continut', 'CONTINUT LECTIE', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+                    'id_curs' => $id_curs,
+					'tip_activitate' => $id_tip_activitate,
+                    'titlu' => $_POST['titlu'],
+                    'continut' => $_POST['continut'],
+                );
+                // datele au fost introduse
+                if( $this->cursuri->adauga_activitate_lectie($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Activitatea a fost adaugata! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['id_curs'] = $id_curs;
+		$data['id_tip_activitate'] = $id_tip_activitate;
+		$this->view->render('adauga_activitate_lectie', $data, false);
+	}
+	
+	public function adauga_activitate_fisier($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_tip_activitate = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('descriere', 'DESCRIERE', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+				
+				$config['upload_path'] = './upload/';
+				$config['allowed_types'] = 'gif|jpg|jpeg|png|doc|docx|pdf|xls|xlsx|ppt|pptx|txt';
+				$config['max_size']	= '2048';
+				$config['remove_spaces']	= true;
+				$upload = new Upload;
+				$upload->initialize($config);
+				
+				if ( ! $upload->do_upload('fisier') ) {
+					$data['mesaj'] = $upload->display_errors('<div class="alert alert-error">', '</div>');
+				} else {
+					$detalii_upload = $upload->data();
+					$cale_fisier = 'upload/'.$detalii_upload['file_name'];
+					
+					
+					// salveaza datele
+					$insert = array(
+						'id_curs' => $id_curs,
+						'tip_activitate' => $id_tip_activitate,
+						'titlu' => $_POST['titlu'],
+						'descriere' => $_POST['descriere'],
+						'fisier' => $cale_fisier,
+					);
+					// datele au fost introduse
+					if( $this->cursuri->adauga_activitate_fisier($insert) ) {
+						unset($_POST);
+						$data['mesaj'] = '<div class="alert alert-success">Activitatea a fost adaugata! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+					} else {
+						$data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+					}
+				}
+				
+            }
+		}
+		$data['id_curs'] = $id_curs;
+		$data['id_tip_activitate'] = $id_tip_activitate;
+		$this->view->render('adauga_activitate_fisier', $data, false);
+	}
+	
+	public function modifica_activitate_lectie($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_activitate = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('continut', 'CONTINUT LECTIE', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+					'id_activitate' => $id_activitate,
+                    'titlu' => $_POST['titlu'],
+                    'continut' => $_POST['continut'],
+                );
+                // datele au fost introduse
+                if( $this->cursuri->modifica_activitate_lectie($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Activitatea a fost modificata! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['detalii_activitate'] = $this->cursuri->detalii_activitate_tip($id_activitate, 'lectie');
+		$data['id_curs'] = $id_curs;
+		$data['id_activitate'] = $id_activitate;
+		$this->view->render('modifica_activitate_lectie', $data, false);
+	}
+	
+	public function modifica_activitate_url($id) {
+		$data = array();
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_activitate = $id_exp[1];
+		if( isset($_POST['salveaza']) ) {
+			$validare_formular = new Validare_Formular;
+			$validare_formular->set_rules('titlu', 'TITLU', 'trim|obligatoriu');
+			$validare_formular->set_rules('nume_url', 'NUME URL', 'trim|obligatoriu');
+			$validare_formular->set_rules('url', 'URL', 'trim|obligatoriu');
+            if( $validare_formular->run() == FALSE ) {
+                // eroare
+                $data['mesaj'] = $validare_formular->error_string('<div class="alert alert-error">', '</div>');
+            } else {
+                // salveaza datele
+                $insert = array(
+					'id_activitate' => $id_activitate,
+                    'titlu' => $_POST['titlu'],
+                    'nume_url' => $_POST['nume_url'],
+					'url' => $_POST['url']
+                );
+                // datele au fost introduse
+                if( $this->cursuri->modifica_activitate_url($insert) ) {
+                    unset($_POST);
+                    $data['mesaj'] = '<div class="alert alert-success">Activitatea a fost modificata! &nbsp;&nbsp;&nbsp; <a class="btn" href="'.URL.'index.php?url=cursuri/curs/'.$id_curs.'">Vezi pagina curs</a></div>';
+                } else {
+                    $data['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul salvarii datelor! <br />'.mysql_error().'</div>';
+                }
+            }
+		}
+		$data['detalii_activitate'] = $this->cursuri->detalii_activitate_tip($id_activitate, 'url');
+		$data['id_curs'] = $id_curs;
+		$data['id_activitate'] = $id_activitate;
+		$this->view->render('modifica_activitate_url', $data, false);
+	}
+	
+	public function sterge_activitate_url() {
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_activitate = $id_exp[1];
+		if($this->cursuri->sterge_activitate_curs($id_activitate, 'url')) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Activitatea a fost stearsa!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/curs/{$id_curs}");
+	}
+	
+	public function sterge_activitate_lectie($id) {
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_activitate = $id_exp[1];
+		if($this->cursuri->sterge_activitate_curs($id_activitate, 'lectie')) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Activitatea a fost stearsa!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/curs/{$id_curs}");
+	}
+	
+	public function sterge_activitate_fisier($id) {
+		$id_exp = explode('_', $id);
+		$id_curs  = $id_exp[0];
+		$id_activitate = $id_exp[1];
+		if($this->cursuri->sterge_activitate_curs($id_activitate, 'fisier')) {
+			$_SESSION['mesaj'] = '<div class="alert alert-success">Activitatea a fost stearsa!</div>';
+		} else {
+			$_SESSION['mesaj'] = '<div class="alert alert-error">A intervenit o eroare in momentul stergerii datelor!</div>';
+		}
+		header("Location: index.php?url=cursuri/curs/{$id_curs}");
 	}
 
 } 
